@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { installCli } from './commands/installCli';
+import { loginToOnboardBase } from './commands/login';
 
 export function activate(context: vscode.ExtensionContext) {
   //install the onboardbase cli
@@ -8,10 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   let disposable = vscode.commands.registerCommand(
     'onboardbase-extension.login',
-    () => {
-      vscode.window.showInformationMessage(
-        'Hello World from Onboardbase Extension!',
-      );
+    async () => {
+      await loginToOnboardBase();
     },
   );
 
