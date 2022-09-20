@@ -4,8 +4,6 @@ import { exec, spawn } from 'child_process';
 const installCli = () => {
   const defaultSpwanArgs = {
     shell: true,
-    //FIXME figure out the working directory
-    cwd: vscode.workspace.workspaceFolders?.[0].uri.toString(),
     env: process.env,
   };
 

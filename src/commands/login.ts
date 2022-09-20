@@ -2,11 +2,6 @@ import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 
 export const loginToOnboardBase = async () => {
-  //check if there's an onboardbase.yml file in the root dir
-  const isLoggedIn = await isOnboardbaseYMLPresent();
-  if (isLoggedIn) {
-    return vscode.window.showInformationMessage('You are logged in');
-  }
 
   const defaultSpwanArgs = {
     shell: true,
@@ -43,19 +38,4 @@ export const loginToOnboardBase = async () => {
     if (code !== 0) {
     }
   });
-};
-
-const isOnboardbaseYMLPresent = async (): Promise<
-  Thenable<string | undefined> | boolean
-> => {
-  if (!vscode.window.activeTextEditor) {
-    return vscode.window.showInformationMessage(
-      'Please open a folder or workspace',
-    );
-  }
-  const ymlFiles = await vscode.workspace.findFiles(
-    '.onboardbase.yml',
-    '**/node_modules/**',
-  );
-  return ymlFiles.length > 0;
 };
