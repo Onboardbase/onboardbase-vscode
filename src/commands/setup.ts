@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
-import { defaultSpwanArgs } from './utils';
-import { SETUP_NO_PROJECT, SETUP_SELECT_PROJECT } from './utils/cliMessages';
+import { defaultSpwanArgs } from '../utils';
+import { SETUP_NO_PROJECT, SETUP_SELECT_PROJECT } from '../utils/cliMessages';
 
 export const setUp = async () => {
   const isSetUpFilePresent = await checkSetupFile();
@@ -15,7 +15,7 @@ export const setUp = async () => {
     vscode.window.showErrorMessage(err.message);
   });
 
-  setUpCli.stdout.on('data', async (data) => {
+  setUpCli.stdout?.on('data', async (data) => {
     const message: string = data.toString();
     console.log(message);
 
@@ -29,7 +29,7 @@ export const setUp = async () => {
       //remove the > for every project
       //display a slection box for each project
       //get the index of the project and type in the down key number of indx times
-             const projectsInput: vscode.QuickPickItem[] = projects.map((project) => ({
+      const projectsInput: vscode.QuickPickItem[] = projects.map((project) => ({
         label: project.substring(1).trim(),
         detail:
           '$(files) Setup secrets with project' + project.substring(1).trim(),
@@ -41,30 +41,31 @@ export const setUp = async () => {
 
       projectSelection.onDidChangeSelection(([{ label }]) => {
         projectSelection.dispose();
-        const selectionCount  = projectsInput.findIndex(item => item.label === label);
+        const selectionCount = projectsInput.findIndex(
+          (item) => item.label === label,
+        );
         // console.log(selectionCount, label);
-        if(selectionCount > 0) {
-                  const downArrowInput = '22 480'.repeat(selectionCount);
-                  console.log(downArrowInput);
-            setUpCli.stdin.write(downArrowInput);
-            setUpCli.stdin.end();
+        if (selectionCount > 0) {
+          const downArrowInput = '22 480'.repeat(selectionCount);
+          console.log(downArrowInput);
+          setUpCli.stdin?.write(downArrowInput);
+          setUpCli.stdin?.end();
         }
 
         // setUpCli.stdin.write('0x0A');
         // setUpCli.stdin.end();
       });
 
-      projectSelection.show(); 
+      projectSelection.show();
     }
-
   });
 
   //remove
-  setUpCli.stdin.on('data', (data) => {
+  setUpCli.stdin?.on('data', (data) => {
     console.log(data.toString());
   });
 
-  setUpCli.stderr.on('data', (data) => {
+  setUpCli.stderr?.on('data', (data) => {
     console.error(data);
   });
 };

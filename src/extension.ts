@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { installCli } from './commands/installCli';
-import { loginToOnboardBase } from './commands/login';
-import { setUp } from './commands/setup';
+import { installCli, loginToOnboardBase, setUp, logout } from './commands';
 
 export function activate(context: vscode.ExtensionContext) {
   //install the onboardbase cli
@@ -17,6 +15,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('onboardbase-extension.setup', async () => {
       await setUp();
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('onboardbase-extension.logout', async () => {
+      await logout();
     }),
   );
 }

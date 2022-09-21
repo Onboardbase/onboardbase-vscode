@@ -12,7 +12,8 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:onboardbase-extension.login",
-    "onCommand:onboardbase-extension.setup"
+    "onCommand:onboardbase-extension.setup",
+    "onCommand:onboardbase-extension.logout"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -24,6 +25,10 @@
       {
         "command": "onboardbase-extension.setup",
         "title": "Onboardbase: Setup Project"
+      },
+      {
+        "command": "onboardbase-extension.logout",
+        "title": "Onboardbase: Revoke Auth Token"
       }
     ]
   },
@@ -36,16 +41,26 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.71.0",
+    "@types/crypto-js": "^4.1.1",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/rimraf": "^3.0.2",
+    "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
-    "@vscode/test-electron": "^2.1.5"
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "crypto-js": "^4.1.1",
+    "is-wsl": "^2.2.0",
+    "node-machine-id": "^1.1.12",
+    "rimraf": "^3.0.2",
+    "yaml": "^2.1.1"
   }
 }

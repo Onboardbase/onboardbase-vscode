@@ -13,7 +13,7 @@ const installCli = () => {
     if (!data.includes('@onboardbase/cli/')) {
       const installOnboardbase = exec(
         'npm i -g @onboardbase/cli@latest',
-        (error, stdout, stderr) => {
+        (error, _, stderr) => {
           if (error) {
             vscode.window.showErrorMessage(error.message);
             return;

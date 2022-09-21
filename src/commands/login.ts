@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
-import { defaultSpwanArgs } from './utils';
+import { defaultSpwanArgs } from '../utils';
 
 export const loginToOnboardBase = async () => {
 
@@ -13,7 +13,7 @@ export const loginToOnboardBase = async () => {
     vscode.window.showErrorMessage(err.message);
   });
 
-  logInCli.stdout.on('data', (data) => {
+  logInCli.stdout?.on('data', (data) => {
     const message: string = data.toString();
     if (message.includes('You have already logged in.')) {
       return vscode.window.showInformationMessage(
@@ -22,8 +22,8 @@ export const loginToOnboardBase = async () => {
       //TODO scope login and overwrite global login
     }
     if (message.includes('Open the authorization page in your browser?')) {
-      logInCli.stdin.write('0x0A');
-      logInCli.stdin.end();
+      logInCli.stdin?.write('0x0A');
+      logInCli.stdin?.end();
     }
     if (message.includes('Authentication successful')) {
       return vscode.window.showInformationMessage('Login Successful');
