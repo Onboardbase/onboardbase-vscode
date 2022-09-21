@@ -59,7 +59,9 @@
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "is-wsl": "^2.2.0",
+    "jwt-decode": "^3.1.2",
     "node-machine-id": "^1.1.12",
+    "node-rsa": "^1.1.1",
     "rimraf": "^3.0.2",
     "yaml": "^2.1.1"
   }

@@ -2,10 +2,7 @@ import * as vscode from 'vscode';
 import { decryptSecrets } from '../utils';
 import ConfigManager from '../config';
 import { revokeAuthToken } from '../services';
-import { join } from 'path';
-import { homedir } from 'os';
-import * as YAML from 'yaml';
-import { readFileSync } from 'fs';
+import { checkForProjectScope } from '../utils/authentication';
 
 export const logout = async () => {
   if (!checkForProjectScope()) {
@@ -48,13 +45,4 @@ export const logout = async () => {
     }
   });
   scopesSelection.show();
-};
-
-const checkForProjectScope = (): boolean => {
-  // const onboardbaseDirectory = join(homedir(), '.onboardbase');
-  const configFile = join(join(homedir(), '.onboardbase'), '.onboardbase.yaml');
-  const ymlConfig = YAML.parse(readFileSync(configFile, { encoding: 'utf8' }));
-  const scopes = ymlConfig.scoped;
-  const projectScope = scopes[process.cwd()] ?? scopes['/'];
-  return projectScope ? true : false;
 };
