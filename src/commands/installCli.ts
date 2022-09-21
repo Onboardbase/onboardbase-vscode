@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { exec, spawn } from 'child_process';
-
+//TODO rewrite whole functionality
 const installCli = () => {
   const defaultSpwanArgs = {
     shell: true,

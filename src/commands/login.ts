@@ -1,12 +1,8 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
+import { defaultSpwanArgs } from './utils';
 
 export const loginToOnboardBase = async () => {
-
-  const defaultSpwanArgs = {
-    shell: true,
-    env: process.env,
-  };
 
   const logInCli = spawn('onboardbase login', defaultSpwanArgs);
   //initiate login
