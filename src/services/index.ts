@@ -100,3 +100,69 @@ export const fetchProjects = async (
   }
   return data.data.generalProjects.list;
 };
+
+export const fetchSecrets = async (
+  project: string,
+  environment: string,
+  accessToken: string,
+) => {
+  const instance = ConfigManager.getHttpInstance();
+  instance.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+  const query = `query {
+    generalProjects(filterOptions: { title: "${project}", fromCli: true}) {
+      totalCount
+      list {
+        id
+        title
+        team {
+          id
+          name
+        }
+        environments(
+          take: 10
+          skip: 0
+          filterOptions: { title: "${environment}", fromCli: true}
+        ) {
+          list {
+            id
+            key
+            title
+            member
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const { data } = await instance.post('', { query });
+  if (data.errors && data.errors[0].message === 'Unauthorized') {
+    throw new Error(
+      "Sorry you don't have access to this project environment any longer, please contact admin",
+    );
+  }
+
+  return data;
+};
+
+export const updateEnvironment = async (
+  accessToken: string,
+  environmentId: string,
+  secrets: any
+): Promise<void> => {
+  const instance = ConfigManager.getHttpInstance();
+  instance.defaults.headers["Authorization"] = `Bearer ${accessToken}`;
+
+  const query = `mutation {
+    updateEnvironment(
+      updateEnvironmentInput: { key: ${JSON.stringify(`[${secrets}]`)}}
+      environmentId: "${environmentId}"
+    ) {
+      id
+      title
+    }
+  }`;
+
+  const { data } = await instance.post("", { query });
+  if (data.errors) throw new Error(data.errors[0].message);
+};
