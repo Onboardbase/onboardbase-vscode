@@ -13,7 +13,8 @@
     "onStartupFinished",
     "onCommand:onboardbase-extension.login",
     "onCommand:onboardbase-extension.setup",
-    "onCommand:onboardbase-extension.logout"
+    "onCommand:onboardbase-extension.logout",
+    "onCommand:onboardbase-extension.add"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -29,8 +30,30 @@
       {
         "command": "onboardbase-extension.logout",
         "title": "Onboardbase: Revoke Auth Token"
+      },
+      {
+        "command": "onboardbase-extension.add",
+        "title": "Onboardbase: Add Secret To Your Project"
+      },
+      {
+        "title": "Onboardbase: Enable Secret CodeLens",
+        "command": "onboardbase-codelens.enableCodeLens",
+        "category": "Secret CodeLens"
+      },
+      {
+        "title": "Onboardbase: Disable Secret Codelens",
+        "command": "onboardbase-codelens.disableCodeLens",
+        "category": "Secret CodeLens"
       }
     ]
+  },
+  "configuration": {
+    "properties": {
+      "onboardbase-codelens.enableCodeLens": {
+        "type": "boolean",
+        "default": true
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",

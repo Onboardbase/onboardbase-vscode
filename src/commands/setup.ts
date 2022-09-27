@@ -87,6 +87,10 @@ export const setUp = async () => {
         Buffer.from(config, 'utf8'),
       );
 
+      vscode.window.showInformationMessage(
+        'Setup complete. Run "onboardbase run" to start your app',
+      );
+
       const gitIgnoreFile = folderUri.with({
         path: posix.join(folderUri.path, '.gitignore'),
       });
@@ -177,10 +181,6 @@ export const setUp = async () => {
           }
         }
       }
-
-      return vscode.window.showInformationMessage(
-        'Setup complete. Run "onboardbase run" to start your app',
-      );
     });
 
     projectsInputSelection.show();

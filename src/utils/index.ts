@@ -5,12 +5,20 @@ import * as CryptoJS from 'crypto-js';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import isWsl = require('is-wsl');
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 import { isDocker } from './isDocker';
-import { fetchSecrets, generateAccessToken, updateEnvironment } from '../services';
+import {
+  fetchSecrets,
+  generateAccessToken,
+  updateEnvironment,
+} from '../services';
 import ConfigManager from '../config';
-import { aesDecryptSecret, encryptWithAESAndRSA, rsaDecryptSecret } from './authentication';
+import {
+  aesDecryptSecret,
+  encryptWithAESAndRSA,
+  rsaDecryptSecret,
+} from './authentication';
 
 export const defaultSpwanArgs: SpawnOptions = {
   shell: true,
@@ -96,39 +104,39 @@ export const parseEnvContentToObject = (envFileContent: string) => {
   const parsedJSON = {};
 
   let certKeys = [];
-  let currentCertKey = { name: "", value: "", exists: false };
-  const modifiedData = envFileContent.split("\n").map((keyAndValue: string) => {
-    if (keyAndValue.includes("-----BEGIN")) {
+  let currentCertKey = { name: '', value: '', exists: false };
+  const modifiedData = envFileContent.split('\n').map((keyAndValue: string) => {
+    if (keyAndValue.includes('-----BEGIN')) {
       currentCertKey.exists = true;
-      const nameBegin = keyAndValue.split("=");
+      const nameBegin = keyAndValue.split('=');
       currentCertKey.name = nameBegin[0];
       currentCertKey.value = nameBegin[1];
-      return "";
-    } else if (keyAndValue.includes("-----END")) {
+      return '';
+    } else if (keyAndValue.includes('-----END')) {
       certKeys.push({
         name: currentCertKey.name,
         value: `${currentCertKey.value}\n${keyAndValue}`,
       });
-      currentCertKey = { name: "", value: "", exists: false };
-      return "";
+      currentCertKey = { name: '', value: '', exists: false };
+      return '';
     } else if (currentCertKey.exists) {
       currentCertKey.value = `${currentCertKey.value}\n${keyAndValue}`;
-      return "";
+      return '';
     }
     return keyAndValue;
   });
 
   const restructuredData = modifiedData
-    .join("\n")
+    .join('\n')
     .trim()
     .split(/\r?\n/)
-    .filter((x) => x.trim() !== "");
+    .filter((x) => x.trim() !== '');
 
   restructuredData.map((data) => {
-    const keyAndValue = data.split("=");
+    const keyAndValue = data.split('=');
 
     if (
-      !keyAndValue[0].trim().startsWith("#") &&
+      !keyAndValue[0].trim().startsWith('#') &&
       keyAndValue[1] !== undefined
     ) {
       parsedJSON[keyAndValue[0]] = keyAndValue[1];
@@ -136,11 +144,11 @@ export const parseEnvContentToObject = (envFileContent: string) => {
   });
 
   certKeys = certKeys.filter(
-    (x) => x.value?.trim() !== "" && x.key?.trim() !== ""
+    (x) => x.value?.trim() !== '' && x.key?.trim() !== '',
   );
 
   certKeys.map((data) => {
-    if (!data.name.trim().startsWith("#") && data.value !== undefined) {
+    if (!data.name.trim().startsWith('#') && data.value !== undefined) {
       parsedJSON[data.name] = data.value;
     }
   });
@@ -150,7 +158,7 @@ export const parseEnvContentToObject = (envFileContent: string) => {
 
 export const fetchRawSecrets = async (
   project: string,
-  environment: string
+  environment: string,
 ): Promise<{
   env: string[];
   user: { name: string; id: string };
@@ -158,7 +166,7 @@ export const fetchRawSecrets = async (
   environmentId: string;
 }> => {
   const { accessToken, user } = await generateAccessToken(
-    await ConfigManager.getToken()
+    await ConfigManager.getToken(),
   );
 
   let secrets = await fetchSecrets(project, environment, accessToken);
@@ -166,27 +174,24 @@ export const fetchRawSecrets = async (
 
   const userCanFetchSecretUnderEnvironment = secrets?.[0]?.member;
   if (!userCanFetchSecretUnderEnvironment) {
-   throw new Error(`You don't have enough permission to update/upload/delete secrets under the ${
-          environment
-        } environment.`)
+    throw new Error(
+      `You don't have enough permission to update/upload/delete secrets under the ${environment} environment.`,
+    );
   }
   const environmentId = secrets[0]?.id;
   secrets = JSON.parse(secrets[0].key);
-
+console.log({key: ConfigManager.getRsaKeys().privateKey as string})
   const secretArray = [];
-
   if (secrets) {
     await Promise.all(
       secrets.map(async (secret: string) => {
         const decryptedRsaSecret = rsaDecryptSecret(
           secret,
-          ConfigManager.getRsaKeys().privateKey as string
+          ConfigManager.getRsaKeys().privateKey as string,
         );
-
         const aesSecret = await aesDecryptSecret(decryptedRsaSecret);
-
         secretArray.push(aesSecret);
-      })
+      }),
     );
 
     return {
@@ -197,7 +202,7 @@ export const fetchRawSecrets = async (
     };
   }
   return {
-    env: ["{}"],
+    env: ['{}'],
     user,
     accessToken,
     environmentId,
@@ -205,31 +210,31 @@ export const fetchRawSecrets = async (
 };
 
 export const formatDate = (date: string, sec?) => {
-  let day = "",
-    month = "",
-    convMonth = "",
-    year = "",
-    time = "";
+  let day = '',
+    month = '',
+    convMonth = '',
+    year = '',
+    time = '';
 
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "April",
-    "May",
-    "June",
-    "July",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    'Jan',
+    'Feb',
+    'Mar',
+    'April',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   const getMonth = (val) => months[Number(val) - 1];
 
   let split;
   if (date) {
-    split = date.split("-");
+    split = date.split('-');
     day = `${split[2][0]}${split[2][1]}`;
     month = split[1];
     year = split[0];
@@ -258,24 +263,24 @@ export const uploadSecretsToOnboardbase = async (
   currentEnvironment: string,
   parsedJSON: Object,
   excludeFromExistingSecrets?: string[],
-  action?: string
+  action?: string,
 ) => {
   const newSecrets = [];
 
   const { env, user, accessToken, environmentId } = await fetchRawSecrets(
     currentProject,
-    currentEnvironment
+    currentEnvironment,
   );
-
+  // console.log(env, user, 'env and user');
   const secretsToDelete = [];
-  if (action === "DELETE") {
+  if (action === 'DELETE') {
     excludeFromExistingSecrets.map((secretKey) => {
       secretsToDelete.push(
         JSON.parse(
           env.find(
-            (secret) => JSON.parse(secret).key === secretKey.toUpperCase()
-          )
-        )
+            (secret) => JSON.parse(secret).key === secretKey.toUpperCase(),
+          ),
+        ),
       );
     });
   }
@@ -298,19 +303,19 @@ export const uploadSecretsToOnboardbase = async (
   await Promise.all([
     Object.keys(parsedJSON).map(async (key) => {
       const existingSecretData = existingSecrets.find(
-        (secret) => secret.key === key.toUpperCase()
+        (secret) => secret.key === key.toUpperCase(),
       );
       const secret = {
         id: existingSecretData?.id || uuidv4(),
         key: key.toUpperCase(),
         value: parsedJSON[key],
-        comment: "",
+        comment: '',
         addedBy: {
           name: user.name,
           id: user.id,
         },
         addedDate: formatDate(new Date(Date.now()).toISOString()),
-        method: "UPDATE",
+        method: 'UPDATE',
       };
       newSecrets.push(secret);
     }),
@@ -322,11 +327,11 @@ export const uploadSecretsToOnboardbase = async (
    */
 
   const joinedSecretsArray = [...newSecrets];
-  if (action === "DELETE")
+  if (action === 'DELETE')
     joinedSecretsArray.push(
       ...secretsToDelete.map((secret) =>
-        Object.assign(secret, { method: "DELETE" })
-      )
+        Object.assign(secret, { method: 'DELETE' }),
+      ),
     );
   const mergedSecrets = removeDuplicateSecrete(joinedSecretsArray);
 
@@ -337,10 +342,10 @@ export const uploadSecretsToOnboardbase = async (
       const stringifiedJson = JSON.stringify(mergedSecret);
       finalSecrets.push(
         JSON.stringify(
-          await encryptWithAESAndRSA(backendRsaPublicKey, stringifiedJson)
-        )
+          await encryptWithAESAndRSA(backendRsaPublicKey, stringifiedJson),
+        ),
       );
-    })
+    }),
   );
 
   await updateEnvironment(accessToken, environmentId, finalSecrets);

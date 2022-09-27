@@ -40,6 +40,7 @@ export const decryptSecrets = async (
 ): Promise<string | undefined> => {
   const encryptionPassphrase = await getEncryptionPassphrase();
   try {
+    console.log(passphrase);
     const bytes = CryptoJS.AES.decrypt(
       secrets,
       passphrase || encryptionPassphrase,
@@ -47,9 +48,9 @@ export const decryptSecrets = async (
     return bytes.toString(CryptoJS.enc.Utf8);
   } catch (error) {
     // Silent this error and just delete the config files from the user's device
-    // console.error(
-    //   "Invalid passprase.. pls check your passphrase and try again"
-    // );
+    console.error(
+      'Invalid passprase.. pls check your passphrase and try again',
+    );
     // process.exit(1);
   }
 };
