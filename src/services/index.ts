@@ -148,10 +148,10 @@ export const fetchSecrets = async (
 export const updateEnvironment = async (
   accessToken: string,
   environmentId: string,
-  secrets: any
+  secrets: any,
 ): Promise<void> => {
   const instance = ConfigManager.getHttpInstance();
-  instance.defaults.headers["Authorization"] = `Bearer ${accessToken}`;
+  instance.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
 
   const query = `mutation {
     updateEnvironment(
@@ -163,6 +163,46 @@ export const updateEnvironment = async (
     }
   }`;
 
-  const { data } = await instance.post("", { query });
+  const { data } = await instance.post('', { query });
   if (data.errors) throw new Error(data.errors[0].message);
+};
+
+export const generateAuthCode = async (
+  fingerprint: string,
+  hostOS: string,
+  hostName: string,
+  hostARCH: string,
+): Promise<{ authCode: string; pollingCode: string }> => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `mutation {
+    addAuthCode(addAuthCodeInput: {fingerprint: "${fingerprint}", hostOS: "${hostOS}", hostName: "${hostName}", hostARCH: "${hostARCH}"}) {
+      pollingCode
+      authCode
+      hostOS
+      hostName
+      hostARCH
+    }
+  }`;
+
+  const { data } = await instance.post('', { query });
+  if (data.errors) {
+    throw new Error(data.errors[0].message);
+  }
+
+  return data?.data?.addAuthCode;
+};
+
+export const getAuthToken = async (pollingCode: string): Promise<any> => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `query {
+    verifyAuthCode(pollingCode: "${pollingCode}") {
+      id
+      token
+    }
+  }`;
+
+  const currentApiHost = instance.defaults.baseURL;
+  ConfigManager.setAuthApiHost(currentApiHost);
+  const { data } = await instance.post('', { query });
+  return data;
 };

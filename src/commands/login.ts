@@ -1,40 +1,110 @@
-import { spawn } from 'child_process';
-import * as vscode from 'vscode';
-
-import { defaultSpwanArgs } from '../utils';
+import * as os from 'os';
+import * as open from 'open';
 import {
-  LOGIN_ALREADY_LOGGED_IN,
-  LOGIN_OPEN_AUTH_PAGE,
-  LOGIN_SUCCESSFUL,
-} from '../utils/cliMessages';
+  StatusBarAlignment,
+  StatusBarItem,
+  window,
+  workspace,
+} from 'vscode';
+
+import ConfigManager from '../config';
+import { getMachineID } from '../utils';
+import { generateAuthCode, getAuthToken } from '../services';
 
 export const loginToOnboardBase = async () => {
-  const logInCli = spawn('onboardbase login', defaultSpwanArgs);
-  //initiate login
-  //2. automatically enter yes to open URL
-  //3. check stdout stream for authentication successfull
+  await ConfigManager.init('Login');
 
-  logInCli.on('error', (err) => {
-    vscode.window.showErrorMessage(err.message);
-  });
+  const hostname = os.hostname();
+  const hostARCH = os.arch();
+  const fingerprint = await getMachineID();
+  const hostOS = os.platform();
+  const allConfigs = ConfigManager.getConfigs();
+  let statusBar: StatusBarItem;
 
-  logInCli.stdout?.on('data', (data) => {
-    const message: string = data.toString();
-    if (message.includes(LOGIN_ALREADY_LOGGED_IN)) {
-      return vscode.window.showInformationMessage(LOGIN_ALREADY_LOGGED_IN);
-      //TODO scope login and overwrite global login
-    }
-    if (message.includes(LOGIN_OPEN_AUTH_PAGE)) {
-      logInCli.stdin?.write('0x0A');
-      logInCli.stdin?.end();
-    }
-    if (message.includes(LOGIN_SUCCESSFUL)) {
-      return vscode.window.showInformationMessage(LOGIN_SUCCESSFUL);
-    }
-  });
+  try {
+    const { pollingCode, authCode } = await generateAuthCode(
+      fingerprint,
+      hostOS,
+      hostname,
+      hostARCH,
+    );
+    const cwd = workspace.workspaceFolders[0].uri.path;
+    const dashboardHost =
+      allConfigs[cwd]?.['dashboard-host'] ??
+      allConfigs['/']?.['dashboard-host'] ??
+      'https://app.onboardbase.com';
 
-  logInCli.on('exit', (code) => {
-    if (code !== 0) {
+    const authUrl = dashboardHost.concat(`/auth/cli?authCode=${authCode}`);
+
+    if (!allConfigs['/'] || !allConfigs['/']?.token) {
+      const browserOption = await window.showQuickPick(['Yes', 'No'], {
+        title: 'Open the authorization page in your browser?',
+      });
+
+      if (browserOption === 'Yes') {
+        await open(authUrl);
+        window.showInformationMessage('Waiting for browser authentication');
+      } else {
+        statusBar = window.createStatusBarItem(StatusBarAlignment.Right, 100);
+        statusBar.text = `Complete authorization at ${authUrl}`;
+        statusBar.show();
+        window.showInformationMessage('Waiting for browser authentication');
+      }
     }
-  });
+
+    let newConfig = {
+      scope: '/',
+      token: undefined,
+    };
+
+    if (allConfigs['/']?.token && allConfigs['/']?.token !== undefined) {
+      const scopedConfig = ConfigManager.getScopedConfig();
+      return window.showInformationMessage('You have logged in already');
+      //TODO Handle overwriring the login
+    }
+
+    const pollingInterval = 4000; // 4secs
+    const pollingTimeout = 300000; // 5mins
+    let authTokenResponse = await getAuthToken(pollingCode);
+
+    let isAuthenticated = false;
+    if (authTokenResponse?.errors) {
+      let intervalHandler: NodeJS.Timeout;
+      intervalHandler = setInterval(async () => {
+        if (!isAuthenticated) {
+          authTokenResponse = await getAuthToken(pollingCode);
+          if (!authTokenResponse?.errors) {
+            isAuthenticated = true;
+            clearInterval(intervalHandler);
+            const { token } = authTokenResponse?.data?.verifyAuthCode;
+            newConfig.token = token;
+            await ConfigManager.updateGlobalConfig(
+              Object.assign(newConfig, {
+                dashboardHost,
+                apiHost: ConfigManager.getAuthApiHost(),
+                requirePassword: false,
+                password: '',
+                requirePasswordForCurrentSession: false,
+              }),
+            );
+            // statusBar.dispose();
+            return new Promise<Thenable<string>>((resolve) => {
+              resolve(
+                window.showInformationMessage('Authentication successful.'),
+              );
+            });
+          }
+        }
+      }, pollingInterval);
+
+      const intervalTimeout = setTimeout(() => {
+        clearInterval(intervalHandler);
+        clearTimeout(intervalTimeout);
+        // statusBar.dispose();
+        return window.showErrorMessage('Authentication Timeout exceeded...');
+      }, pollingTimeout);
+    }
+  } catch (err) {
+    return window.showErrorMessage(err.name);
+  }
 };

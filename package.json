@@ -85,6 +85,7 @@
     "jwt-decode": "^3.1.2",
     "node-machine-id": "^1.1.12",
     "node-rsa": "^1.1.1",
+    "open": "^8.4.0",
     "rimraf": "^3.0.2",
     "uuid": "^9.0.0",
     "yaml": "^2.1.1"

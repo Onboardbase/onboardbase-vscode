@@ -43,6 +43,7 @@ class ConfigManager {
     backendPublicKey: undefined,
   };
   private authApiHost: string = '';
+  private cwd = (vscode.workspace.workspaceFolders[0].uri).path;
   // private authSessionDetails: {
   //   email: string;
   //   team: { id: string; name: string };
@@ -50,12 +51,12 @@ class ConfigManager {
   //   project: { id: string };
   // };
   public shouldCreateProjectLog: boolean = true;
-  private projectFallbackConfigFile = join(process.cwd(), 'onboardbase.yaml');
-  private projectNewConfigFile = join(process.cwd(), '.onboardbase.yaml');
+  private projectFallbackConfigFile = join(this.cwd, 'onboardbase.yaml');
+  private projectNewConfigFile = join(this.cwd, '.onboardbase.yaml');
   /**
    * check for .yml extension first before falling back to .yaml.
    */
-  private projectConfigPath = join(process.cwd(), '.onboardbase.yml');
+  private projectConfigPath = join(this.cwd, '.onboardbase.yml');
   /**
    * Add a fallback for .yml extension incase a user chooses to use that in replace of .yaml
    *
@@ -183,39 +184,10 @@ class ConfigManager {
       return;
     }
 
-    /**
-     * if onboardbase config file exist but doesnt have a token, revert
-     * back to ENV Vars
-     */
-    // if (isExist(this.onboardbaseConfigFile)) {
-    //   const config = YAML.parse(
-    //     readFileSync(this.onboardbaseConfigFile, { encoding: "utf8" })
-    //   );
-
-    //   const directoryScopes = config.scoped;
-    //   const projectScope =
-    //     directoryScopes[process.cwd()] ?? directoryScopes["/"];
-    //   if (!projectScope.token) {
-    //     const onboardbaseToken = process.env.ONBOARDBASE_TOKEN;
-    //     const onboardbaseProject = process.env.ONBOARDBASE_PROJECT;
-    //     const onboardbaseEnvironment = process.env.ONBOARDBASE_ENVIRONMENT;
-    //     this.store = Object.assign(
-    //       {
-    //         project: onboardbaseProject as string,
-    //         environment: onboardbaseEnvironment as string,
-    //         token: onboardbaseToken,
-    //       },
-    //       projectScope
-    //     );
-
-    //     return;
-    //   }
-    // }
-
     const config = YAML.parse(
       readFileSync(this.onboardbaseConfigFile, { encoding: 'utf8' }),
     );
-    const currentDirectory = process.cwd();
+    const currentDirectory = this.cwd;
     const directoryScopes = config.scoped;
     const projectScope =
       directoryScopes[currentDirectory] ?? directoryScopes['/'];
@@ -260,7 +232,7 @@ class ConfigManager {
 
   getScopedConfig(directory?: string): any {
     const directoryScopes = this.getConfigs();
-    return directoryScopes[directory ?? process.cwd()];
+    return directoryScopes[directory ?? this.cwd];
   }
 
   getProjectConfig(): any {
@@ -487,7 +459,7 @@ class ConfigManager {
     const instance: any = axios.create({
       baseURL: url
         ? url
-        : allConfigs[process.cwd()]?.['api-host'] ??
+        : allConfigs[this.cwd]?.['api-host'] ??
           allConfigs['/']?.['api-host'] ??
           'https://api.onboardbase.com/graphql',
     });

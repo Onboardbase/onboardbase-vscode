@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import { workspace } from 'vscode';
 import * as YAML from 'yaml';
 import * as NodeRSA from 'node-rsa';
 import { getEncryptionPassphrase } from '.';
@@ -10,7 +11,8 @@ export const checkForProjectScope = (): boolean => {
   const configFile = join(join(homedir(), '.onboardbase'), '.onboardbase.yaml');
   const ymlConfig = YAML.parse(readFileSync(configFile, { encoding: 'utf8' }));
   const scopes = ymlConfig.scoped;
-  const projectScope = scopes[process.cwd()] ?? scopes['/'];
+  const cwd = workspace.workspaceFolders[0].uri.path;
+  const projectScope = scopes[cwd] ?? scopes['/'];
   return projectScope ? true : false;
 };
 
