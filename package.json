@@ -36,6 +36,10 @@
         "title": "Onboardbase: Upload Secret To Onboardbase"
       },
       {
+        "command": "onboardbase-extension.add_local",
+        "title": "Onboardbase: Add Secret To Local Config"
+      },
+      {
         "command": "onboardbase-extension.search",
         "title": "Onboardbase: Retrieve Secret From Onboardbase"
       },

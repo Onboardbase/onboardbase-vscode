@@ -46,6 +46,13 @@ export function activate(context: ExtensionContext) {
     }),
   );
 
+  context.subscriptions.push(
+    commands.registerCommand('onboardbase-extension.add_local', async () => {
+      await add(true);
+    }),
+  );
+
+
   commands.registerCommand('onboardbase-codelens.enableCodeLens', () => {
     workspace
       .getConfiguration('onboardbase-codelens')
