@@ -36,6 +36,10 @@
         "title": "Onboardbase: Add Secret To Your Project"
       },
       {
+        "command": "onboardbase-extension.search",
+        "title": "Onboardbase: Retrieve Secret From Onboardbase"
+      },
+      {
         "title": "Onboardbase: Enable Secret CodeLens",
         "command": "onboardbase-codelens.enableCodeLens",
         "category": "Secret CodeLens"

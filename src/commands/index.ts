@@ -4,3 +4,4 @@ export { installCli } from './installCli';
 export { logout } from './logout';
 export { add } from './add';
 export { save } from './save';
+export {search} from './search';

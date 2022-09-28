@@ -13,6 +13,7 @@ import {
   logout,
   add,
   save,
+  search,
 } from './commands';
 import { CodelensProvider } from './config/CodeLensProvider';
 import { parseEnvContentToObject } from './utils';
@@ -74,6 +75,10 @@ export function activate(context: ExtensionContext) {
       await save(args);
     },
   );
+
+  commands.registerCommand('onboardbase-extension.search', async () => {
+    await search();
+  });
 }
 
 // this method is called when your extension is deactivated
