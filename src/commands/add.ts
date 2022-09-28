@@ -18,7 +18,7 @@ export const add = async () => {
       // editor.edit((editBuilder) => {
       //   editBuilder.replace(selection, `process.env.${secretName}`);
       // });
-      commands.executeCommand('onboardbase-extension.save', {
+      commands.executeCommand('onboardbase-extension.upload', {
         [secretName]: secret,
       });
     }

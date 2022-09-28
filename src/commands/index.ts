@@ -3,5 +3,5 @@ export { loginToOnboardBase } from './login';
 export { installCli } from './installCli';
 export { logout } from './logout';
 export { add } from './add';
-export { save } from './save';
+export { upload } from './upload';
 export {search} from './search';

@@ -33,7 +33,7 @@
       },
       {
         "command": "onboardbase-extension.add",
-        "title": "Onboardbase: Add Secret To Your Project"
+        "title": "Onboardbase: Upload Secret To Onboardbase"
       },
       {
         "command": "onboardbase-extension.search",

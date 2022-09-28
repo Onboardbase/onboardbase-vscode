@@ -42,7 +42,7 @@ export class CodelensProvider implements vscode.CodeLensProvider {
         if (range) {
           const newLens = new vscode.CodeLens(range);
           newLens.command = {
-            title: 'Add secret to onboardbase',
+            title: 'Upload secret to Onboardbase',
             command: 'onboardbase-codelens.codelensAction',
             arguments: [line],
           };

@@ -4,7 +4,7 @@ import { checkForProjectScope } from '../utils/authentication';
 import ConfigManager from '../config';
 import { uploadSecretsToOnboardbase } from '../utils';
 
-export const save = async (env: { [key: string]: string | number }) => {
+export const upload = async (env: { [key: string]: string | number }) => {
   if (!checkForProjectScope()) {
     return window.showErrorMessage('Please login');
   }
@@ -14,7 +14,7 @@ export const save = async (env: { [key: string]: string | number }) => {
 
   window.withProgress(
     {
-      title: 'Adding secret to onboardbase...',
+      title: 'Uploading secret to onboardbase...',
       location: ProgressLocation.Notification,
       cancellable: false,
     },

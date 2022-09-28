@@ -12,16 +12,13 @@ import {
   setUp,
   logout,
   add,
-  save,
+  upload,
   search,
 } from './commands';
 import { CodelensProvider } from './config/CodeLensProvider';
 import { parseEnvContentToObject } from './utils';
 
 export function activate(context: ExtensionContext) {
-  //install the onboardbase cli
-  //we can either do this, or make it a requirement that the extension should already be installed
-  installCli();
   const codeLensProvider = new CodelensProvider();
   languages.registerCodeLensProvider({ pattern: '**/*.env' }, codeLensProvider);
 
@@ -65,14 +62,14 @@ export function activate(context: ExtensionContext) {
     'onboardbase-codelens.codelensAction',
     (args: TextLine) => {
       const env = parseEnvContentToObject(args.text);
-      commands.executeCommand('onboardbase-extension.save', env);
+      commands.executeCommand('onboardbase-extension.upload', env);
     },
   );
 
   commands.registerCommand(
-    'onboardbase-extension.save',
+    'onboardbase-extension.upload',
     async (args: { [key: string]: string | number }) => {
-      await save(args);
+      await upload(args);
     },
   );
 
