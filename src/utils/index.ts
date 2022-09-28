@@ -180,7 +180,6 @@ export const fetchRawSecrets = async (
   }
   const environmentId = secrets[0]?.id;
   secrets = JSON.parse(secrets[0].key);
-console.log({key: ConfigManager.getRsaKeys().privateKey as string})
   const secretArray = [];
   if (secrets) {
     await Promise.all(
@@ -271,7 +270,6 @@ export const uploadSecretsToOnboardbase = async (
     currentProject,
     currentEnvironment,
   );
-  // console.log(env, user, 'env and user');
   const secretsToDelete = [];
   if (action === 'DELETE') {
     excludeFromExistingSecrets.map((secretKey) => {

@@ -5,6 +5,7 @@ import { workspace } from 'vscode';
 import * as YAML from 'yaml';
 import * as NodeRSA from 'node-rsa';
 import { getEncryptionPassphrase } from '.';
+import CryptoJS = require('crypto-js');
 
 export const checkForProjectScope = (): boolean => {
   // const onboardbaseDirectory = join(homedir(), '.onboardbase');
@@ -41,20 +42,15 @@ export const decryptSecrets = async (
   passphrase?: string,
 ): Promise<string | undefined> => {
   const encryptionPassphrase = await getEncryptionPassphrase();
-  try {
-    console.log(passphrase);
+  // try {
     const bytes = CryptoJS.AES.decrypt(
       secrets,
       passphrase || encryptionPassphrase,
     );
     return bytes.toString(CryptoJS.enc.Utf8);
-  } catch (error) {
-    // Silent this error and just delete the config files from the user's device
-    console.error(
-      'Invalid passprase.. pls check your passphrase and try again',
-    );
-    // process.exit(1);
-  }
+  // } catch (error) {
+    
+  // }
 };
 
 export const getFrontendEncryptionKey = (): string => {

@@ -151,6 +151,13 @@ export const setUp = async () => {
                   parseEnvContentToObject(envContent),
                 );
 
+                if (shouldDeleteEnvFileAfterSync === 'Yes') {
+                  vscode.workspace.fs.delete(envFiles[0]);
+                  vscode.window.showInformationMessage(
+                    'ENV File has been deleted',
+                  );
+                }
+
                 return new Promise<Thenable<string>>((resolve) => {
                   resolve(
                     vscode.window.showInformationMessage(
@@ -160,11 +167,6 @@ export const setUp = async () => {
                 });
               },
             );
-
-            if (shouldDeleteEnvFileAfterSync === 'Yes') {
-              vscode.workspace.fs.delete(envFiles[0]);
-              vscode.window.showInformationMessage('ENV File has been deleted');
-            }
           } else {
             const wouldLikeToSyncEnv = await vscode.window.showQuickPick(
               ['Yes', 'No'],
@@ -177,6 +179,40 @@ export const setUp = async () => {
                 envFiles.map((file) => posix.parse(file.path).base),
                 { title: 'Please select the ENV file you would like to sync' },
               );
+
+              const shouldDeleteEnvFileAfterSync =
+                await vscode.window.showQuickPick(['Yes', 'No'], {
+                  title:
+                    'Would you like to delete the ENV file after uploading to onboardbase ?',
+                });
+              const envContent = await readFile(
+                envFiles.find(
+                  (file) => posix.parse(file.path).base === envSelection,
+                ),
+              );
+              await uploadSecretsToOnboardbase(
+                project,
+                pickedEnv,
+                parseEnvContentToObject(envContent),
+              );
+              if (shouldDeleteEnvFileAfterSync === 'Yes') {
+                vscode.workspace.fs.delete(
+                  envFiles.find(
+                    (file) => posix.parse(file.path).base === envSelection,
+                  ),
+                );
+                vscode.window.showInformationMessage(
+                  'ENV File has been deleted',
+                );
+              }
+
+              return new Promise<Thenable<string>>((resolve) => {
+                resolve(
+                  vscode.window.showInformationMessage(
+                    'ENV Contents has been uploaded to Onboardbase successfully.',
+                  ),
+                );
+              });
             }
           }
         }

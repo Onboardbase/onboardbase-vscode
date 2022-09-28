@@ -37,19 +37,15 @@ export const loginToOnboardBase = async () => {
     const authUrl = dashboardHost.concat(`/auth/cli?authCode=${authCode}`);
 
     if (!allConfigs['/'] || !allConfigs['/']?.token) {
-      const browserOption = await window.showQuickPick(['Yes', 'No'], {
-        title: 'Open the authorization page in your browser?',
-      });
+      //TODO ask user if they want to open auth page in browser
+      // const browserOption = await window.showQuickPick(['Yes', 'No'], {
+      //   title: 'Open the authorization page in your browser?',
+      // });
 
-      if (browserOption === 'Yes') {
+      // if (browserOption === 'Yes') {}
         await open(authUrl);
         window.showInformationMessage('Waiting for browser authentication');
-      } else {
-        statusBar = window.createStatusBarItem(StatusBarAlignment.Right, 100);
-        statusBar.text = `Complete authorization at ${authUrl}`;
-        statusBar.show();
-        window.showInformationMessage('Waiting for browser authentication');
-      }
+      
     }
 
     let newConfig = {
