@@ -18,6 +18,7 @@ export const setUp = async () => {
     return vscode.window.showErrorMessage('Please login');
   }
 
+  //FIXME it doesn't check setup file correctly
   const isSetUpFilePresent = await checkSetupFile();
   if (isSetUpFilePresent) {
     return vscode.window.showInformationMessage(`Setup file is present`);
@@ -157,13 +158,11 @@ export const setUp = async () => {
                     'ENV File has been deleted',
                   );
                 }
-
-                return new Promise<Thenable<string>>((resolve) => {
-                  resolve(
-                    vscode.window.showInformationMessage(
-                      'ENV Contents has been uploaded to Onboardbase successfully.',
-                    ),
-                  );
+                vscode.window.showInformationMessage(
+                  'ENV Contents has been uploaded to Onboardbase successfully.',
+                );
+                return new Promise<void>((resolve) => {
+                  resolve();
                 });
               },
             );
@@ -205,13 +204,11 @@ export const setUp = async () => {
                   'ENV File has been deleted',
                 );
               }
-
-              return new Promise<Thenable<string>>((resolve) => {
-                resolve(
-                  vscode.window.showInformationMessage(
-                    'ENV Contents has been uploaded to Onboardbase successfully.',
-                  ),
-                );
+              vscode.window.showInformationMessage(
+                'ENV Contents has been uploaded to Onboardbase successfully.',
+              );
+              return new Promise<void>((resolve) => {
+                resolve();
               });
             }
           }
@@ -237,5 +234,6 @@ const checkSetupFile = async (): Promise<
     '.onboardbase',
     '**/node_modules/**',
   );
+
   return ymlFiles.length > 0;
 };

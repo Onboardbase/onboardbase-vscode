@@ -70,8 +70,8 @@ export function activate(context: ExtensionContext) {
 
   commands.registerCommand(
     'onboardbase-extension.save',
-    (args: { [key: string]: string | number }) => {
-      save(args);
+    async (args: { [key: string]: string | number }) => {
+      await save(args);
     },
   );
 }

@@ -29,7 +29,7 @@
       },
       {
         "command": "onboardbase-extension.logout",
-        "title": "Onboardbase: Revoke Auth Token"
+        "title": "Onboardbase: Logout"
       },
       {
         "command": "onboardbase-extension.add",

@@ -1,9 +1,40 @@
-import { window } from 'vscode';
+import { ProgressLocation, window } from 'vscode';
 
-export const save = (env: { [key: string]: string | number }) => {
-  Object.keys(env).map((secret) =>
-    window.showInformationMessage(
-      `adding secret: ${secret} with value: ${env[secret]} to onboardbase`,
-    ),
+import { checkForProjectScope } from '../utils/authentication';
+import ConfigManager from '../config';
+import { uploadSecretsToOnboardbase } from '../utils';
+
+export const save = async (env: { [key: string]: string | number }) => {
+  if (!checkForProjectScope()) {
+    return window.showErrorMessage('Please login');
+  }
+
+  await ConfigManager.init();
+  const config = ConfigManager.getProjectConfig();
+
+  window.withProgress(
+    {
+      title: 'Adding secret to onboardbase...',
+      location: ProgressLocation.Notification,
+      cancellable: false,
+    },
+    async () => {
+      try {
+        await uploadSecretsToOnboardbase(
+          config.setup.project,
+          config.setup.environment,
+          env,
+        );
+        window.showInformationMessage(
+          'Secret has been uploaded to Onboardbase successfully.',
+        );
+        return new Promise<void>((resolve) => {
+          resolve();
+        });
+      } catch (error) {
+        console.error(error);
+        return window.showErrorMessage(error.message);
+      }
+    },
   );
 };
