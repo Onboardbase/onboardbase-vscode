@@ -10,9 +10,12 @@ export const add = async (local?: boolean) => {
   if (editor) {
     const document = editor.document;
     const selection = editor.selection;
-
     // Get the word within the selection
     const secret = document.getText(selection);
+    if (!secret || secret === '') {
+      return window.showErrorMessage('Please highlight a text');
+    }
+
     const secretName = await window.showInputBox({
       title: 'What should the secret be named?',
       prompt: 'Name of the secret',
@@ -29,12 +32,13 @@ export const add = async (local?: boolean) => {
         let config = ConfigManager.getProjectConfig();
 
         if (config?.secrets?.local) {
-          config.secrets.local = Object.assign(config.secrets.local, {
-            [secretName]: secret,
-          });
+          config.secrets.local = [
+            ...config.secrets.local,
+            { [secretName]: secret },
+          ];
         } else {
           config = Object.assign(config, {
-            secret: { local: { [secretName]: secret } },
+            secrets: { local: [{ [secretName]: secret }] },
           });
         }
 
@@ -43,7 +47,7 @@ export const add = async (local?: boolean) => {
         const configFile = folderUri.with({
           path: posix.join(folderUri.path, '.onboardbase.yaml'),
         });
-        
+
         await workspace.fs.writeFile(
           configFile,
           Buffer.from(updatedConfig, 'utf8'),
