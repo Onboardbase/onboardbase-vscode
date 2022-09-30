@@ -281,7 +281,7 @@ class ConfigManager {
   }
 
   storeBackendPublicKey(publicKey: string) {
-    this.rsaKeys.backendPublicKey = publicKey; // TODO: check if it is epheremal and needs to persist
+    this.rsaKeys.backendPublicKey = publicKey;
   }
 
   async deleteToken({ scope }: { scope: string }) {

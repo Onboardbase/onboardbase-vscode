@@ -1,7 +1,6 @@
 import * as os from 'os';
 import * as open from 'open';
 import {
-  StatusBarAlignment,
   StatusBarItem,
   window,
   workspace,

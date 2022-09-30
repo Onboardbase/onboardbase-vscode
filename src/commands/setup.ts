@@ -18,7 +18,6 @@ export const setUp = async () => {
     return vscode.window.showErrorMessage('Please login');
   }
 
-  //FIXME it doesn't check setup file correctly
   const isSetUpFilePresent = await checkSetupFile();
   if (isSetUpFilePresent) {
     return vscode.window.showInformationMessage(`Setup file is present`);
@@ -76,7 +75,6 @@ export const setUp = async () => {
         },
       });
 
-      // //TODO Update the project config if there's one present
       const folderUri = vscode.workspace.workspaceFolders[0].uri;
       const configFile = folderUri.with({
         path: posix.join(folderUri.path, '.onboardbase.yaml'),
@@ -231,7 +229,7 @@ const checkSetupFile = async (): Promise<
     );
   }
   const ymlFiles = await vscode.workspace.findFiles(
-    '.onboardbase',
+    '.onboardbase.yaml',
     '**/node_modules/**',
   );
 
