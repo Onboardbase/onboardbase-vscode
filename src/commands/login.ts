@@ -88,7 +88,7 @@ export const loginToOnboardBase = async () => {
         clearInterval(intervalHandler);
         clearTimeout(intervalTimeout);
         // statusBar.dispose();
-        window.showErrorMessage('Authentication Timeout exceeded...');
+        window.showErrorMessage('Authentication Timeout exceeded');
       }, pollingTimeout);
     }
   } catch (err) {
