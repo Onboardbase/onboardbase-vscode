@@ -78,7 +78,8 @@ export const loginToOnboardBase = async () => {
               }),
             );
             // statusBar.dispose();
-             window.showInformationMessage('Authentication successful.');
+            clearTimeout(intervalTimeout);
+            return window.showInformationMessage('Authentication successful.');
           }
         }
       }, pollingInterval);
@@ -87,7 +88,7 @@ export const loginToOnboardBase = async () => {
         clearInterval(intervalHandler);
         clearTimeout(intervalTimeout);
         // statusBar.dispose();
-        return window.showErrorMessage('Authentication Timeout exceeded...');
+        window.showErrorMessage('Authentication Timeout exceeded...');
       }, pollingTimeout);
     }
   } catch (err) {
