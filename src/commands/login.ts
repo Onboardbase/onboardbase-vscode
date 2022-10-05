@@ -1,10 +1,6 @@
 import * as os from 'os';
 import * as open from 'open';
-import {
-  StatusBarItem,
-  window,
-  workspace,
-} from 'vscode';
+import { StatusBarItem, window, workspace } from 'vscode';
 
 import ConfigManager from '../config';
 import { getMachineID } from '../utils';
@@ -42,9 +38,8 @@ export const loginToOnboardBase = async () => {
       // });
 
       // if (browserOption === 'Yes') {}
-        await open(authUrl);
-        window.showInformationMessage('Waiting for browser authentication');
-      
+      await open(authUrl);
+      window.showInformationMessage('Waiting for browser authentication');
     }
 
     let newConfig = {
@@ -83,11 +78,7 @@ export const loginToOnboardBase = async () => {
               }),
             );
             // statusBar.dispose();
-            return new Promise<Thenable<string>>((resolve) => {
-              resolve(
-                window.showInformationMessage('Authentication successful.'),
-              );
-            });
+             window.showInformationMessage('Authentication successful.');
           }
         }
       }, pollingInterval);

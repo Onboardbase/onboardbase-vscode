@@ -28,6 +28,11 @@ export const add = async (local?: boolean) => {
 
       /*I am using this for both adding secrets to the local yaml or uploading to onboardbase*/
       if (local) {
+        const isSetUpFilePresent = await checkSetupFile();
+        if (!isSetUpFilePresent) {
+          return window.showErrorMessage(`Please Setup Your Project`);
+        }
+
         await ConfigManager.init();
         let config = ConfigManager.getProjectConfig();
 
@@ -61,4 +66,18 @@ export const add = async (local?: boolean) => {
       }
     }
   }
+};
+
+const checkSetupFile = async (): Promise<
+  Thenable<string | undefined> | boolean
+> => {
+  if (!window.activeTextEditor) {
+    return window.showInformationMessage('Please open a folder or workspace');
+  }
+  const ymlFiles = await workspace.findFiles(
+    '.onboardbase.yaml',
+    '**/node_modules/**',
+  );
+
+  return ymlFiles.length > 0;
 };
