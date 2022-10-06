@@ -7,7 +7,6 @@ import {
 } from 'vscode';
 
 import {
-  installCli,
   loginToOnboardBase,
   setUp,
   logout,
