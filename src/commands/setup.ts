@@ -145,7 +145,6 @@ export const setUp = async () => {
               },
               async () => {
                 await uploadSecretsToOnboardbase(
-                  project,
                   pickedEnv,
                   parseEnvContentToObject(envContent),
                 );
@@ -188,7 +187,6 @@ export const setUp = async () => {
                 ),
               );
               await uploadSecretsToOnboardbase(
-                project,
                 pickedEnv,
                 parseEnvContentToObject(envContent),
               );

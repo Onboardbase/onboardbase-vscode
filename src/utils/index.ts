@@ -17,8 +17,13 @@ import ConfigManager from '../config';
 import {
   aesDecryptSecret,
   encryptWithAESAndRSA,
+  getEncryptionAndDecryptionKey,
+  getEnvironmentId,
   rsaDecryptSecret,
 } from './authentication';
+import { addSecrets, retrieveSecrets } from '../services/new_enc';
+import jwtDecode from 'jwt-decode';
+import { TAddSecretInput } from '../services/response.types';
 
 export const defaultSpwanArgs: SpawnOptions = {
   shell: true,
@@ -157,42 +162,38 @@ export const parseEnvContentToObject = (envFileContent: string) => {
 };
 
 export const fetchRawSecrets = async (
-  project: string,
   environment: string,
 ): Promise<{
-  env: string[];
+  env: { key: string; value: string }[];
   user: { name: string; id: string };
   accessToken: string;
   environmentId: string;
 }> => {
+
   const { accessToken, user } = await generateAccessToken(
     await ConfigManager.getToken(),
   );
 
-  let secrets = await fetchSecrets(project, environment, accessToken);
-  secrets = secrets?.data?.generalProjects.list[0].environments.list;
+  const decryptedRSASecretKey = getEncryptionAndDecryptionKey(accessToken);
+  const environmentId = await getEnvironmentId(environment, accessToken);
+  const secrets = await retrieveSecrets(environmentId, accessToken);
 
-  const userCanFetchSecretUnderEnvironment = secrets?.[0]?.member;
+  const userCanFetchSecretUnderEnvironment = secrets.list[0].project.member;
   if (!userCanFetchSecretUnderEnvironment) {
     throw new Error(
       `You don't have enough permission to update/upload/delete secrets under the ${environment} environment.`,
     );
   }
-  const environmentId = secrets[0]?.id;
-  secrets = JSON.parse(secrets[0].key);
-  const secretArray = [];
+
+  const secretArray: { key: string; value: string }[] = [];
   if (secrets) {
     await Promise.all(
-      secrets.map(async (secret: string) => {
-        const decryptedRsaSecret = rsaDecryptSecret(
-          secret,
-          ConfigManager.getRsaKeys().privateKey as string,
-        );
-        const aesSecret = await aesDecryptSecret(decryptedRsaSecret);
-        secretArray.push(aesSecret);
+      secrets.list.map(async (secret) => {
+        const value = await decryptSecrets(secret.value, decryptedRSASecretKey);
+        const key = await decryptSecrets(secret.key, decryptedRSASecretKey);
+        secretArray.push({ key, value });
       }),
     );
-
     return {
       env: secretArray,
       user,
@@ -201,7 +202,7 @@ export const fetchRawSecrets = async (
     };
   }
   return {
-    env: ['{}'],
+    env: [],
     user,
     accessToken,
     environmentId,
@@ -258,36 +259,28 @@ export const removeDuplicateSecrete = (data: Object[]) => {
 };
 
 export const uploadSecretsToOnboardbase = async (
-  currentProject: string,
   currentEnvironment: string,
   parsedJSON: Object,
   excludeFromExistingSecrets?: string[],
   action?: string,
 ) => {
-  const newSecrets = [];
 
-  const { env, user, accessToken, environmentId } = await fetchRawSecrets(
-    currentProject,
+  const { env, accessToken, environmentId } = await fetchRawSecrets(
     currentEnvironment,
   );
+
   const secretsToDelete = [];
   if (action === 'DELETE') {
     excludeFromExistingSecrets.map((secretKey) => {
       secretsToDelete.push(
-        JSON.parse(
-          env.find(
-            (secret) => JSON.parse(secret).key === secretKey.toUpperCase(),
-          ),
-        ),
+        env.find((secret) => secret.key === secretKey.toUpperCase()),
       );
     });
   }
 
-  const backendRsaPublicKey = ConfigManager.getRsaKeys()
-    .backendPublicKey as string;
   const existingSecrets = [];
   env.map((strigifiedEnv) => {
-    const parsedSecret = JSON.parse(strigifiedEnv as unknown as string);
+    const parsedSecret = strigifiedEnv;
     if (excludeFromExistingSecrets && excludeFromExistingSecrets.length > 0) {
       if (!excludeFromExistingSecrets.includes(parsedSecret.key))
         existingSecrets.push(parsedSecret);
@@ -298,53 +291,18 @@ export const uploadSecretsToOnboardbase = async (
     }
   });
 
-  await Promise.all([
-    Object.keys(parsedJSON).map(async (key) => {
-      const existingSecretData = existingSecrets.find(
-        (secret) => secret.key === key.toUpperCase(),
-      );
-      const secret = {
-        id: existingSecretData?.id || uuidv4(),
-        key: key.toUpperCase(),
-        value: parsedJSON[key],
-        comment: '',
-        addedBy: {
-          name: user.name,
-          id: user.id,
-        },
-        addedDate: formatDate(new Date(Date.now()).toISOString()),
-        method: 'UPDATE',
-      };
-      newSecrets.push(secret);
-    }),
-  ]);
+  const encryptionKey = getEncryptionAndDecryptionKey(accessToken);
+  const newSecrets: TAddSecretInput[] = [];
 
-  /**
-   * @todo
-   * deprecate the `removeDuplicateSecrete` function
-   */
+  for(let [key, value] of Object.entries(parsedJSON)) {
+    const secret = {
+      key: await encryptSecrets(key.toUpperCase(), encryptionKey),
+      value: await encryptSecrets(value, encryptionKey),
+      comment: await encryptSecrets('', encryptionKey),
+      environmentId,
+    };
+    newSecrets.push(secret);
+  }
 
-  const joinedSecretsArray = [...newSecrets];
-  if (action === 'DELETE')
-    joinedSecretsArray.push(
-      ...secretsToDelete.map((secret) =>
-        Object.assign(secret, { method: 'DELETE' }),
-      ),
-    );
-  const mergedSecrets = removeDuplicateSecrete(joinedSecretsArray);
-
-  const finalSecrets = [];
-
-  await Promise.all(
-    mergedSecrets.map(async (mergedSecret) => {
-      const stringifiedJson = JSON.stringify(mergedSecret);
-      finalSecrets.push(
-        JSON.stringify(
-          await encryptWithAESAndRSA(backendRsaPublicKey, stringifiedJson),
-        ),
-      );
-    }),
-  );
-
-  await updateEnvironment(accessToken, environmentId, finalSecrets);
+  await addSecrets(accessToken, newSecrets);
 };

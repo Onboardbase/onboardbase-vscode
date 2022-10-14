@@ -6,6 +6,20 @@ import * as YAML from 'yaml';
 import * as NodeRSA from 'node-rsa';
 import { getEncryptionPassphrase } from '.';
 import CryptoJS = require('crypto-js');
+import { fetchProjects } from '../services';
+import ConfigManager from '../config';
+import jwtDecode from 'jwt-decode';
+
+export const getEnvironmentId = async (
+  env: string,
+  accessToken: string,
+): Promise<string> => {
+  const envs = await fetchProjects(accessToken);
+  const envId = envs.find((e) =>
+    e.environments.list.find((el) => el.title === env),
+  );
+  return envId.environments.list[0].id;
+};
 
 export const checkForProjectScope = (): boolean => {
   // const onboardbaseDirectory = join(homedir(), '.onboardbase');
@@ -42,15 +56,25 @@ export const decryptSecrets = async (
   passphrase?: string,
 ): Promise<string | undefined> => {
   const encryptionPassphrase = await getEncryptionPassphrase();
-  // try {
+  try {
     const bytes = CryptoJS.AES.decrypt(
       secrets,
       passphrase || encryptionPassphrase,
     );
     return bytes.toString(CryptoJS.enc.Utf8);
-  // } catch (error) {
-    
-  // }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getEncryptionAndDecryptionKey = (accessToken: string): string => {
+  const decodedJWT: { secretKey: string } = jwtDecode(accessToken);
+  const key = rsaDecryptSecret(
+    decodedJWT.secretKey,
+    ConfigManager.getRsaKeys().privateKey as string,
+  );
+
+  return key;
 };
 
 export const getFrontendEncryptionKey = (): string => {
@@ -59,7 +83,8 @@ export const getFrontendEncryptionKey = (): string => {
 
 export const aesDecryptSecret = (secret: string) => {
   const passphrase = getFrontendEncryptionKey();
-  return decryptSecrets(secret, passphrase);
+  const key = ConfigManager.getRsaKeys().privateKey as string;
+  return decryptSecrets(secret, key);
 };
 
 export const rsaEncryptSecret = (data: string, publicKey: string): string => {

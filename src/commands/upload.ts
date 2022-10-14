@@ -10,7 +10,7 @@ export const upload = async (env: { [key: string]: string | number }) => {
   }
 
   const isSetUpFilePresent = await checkSetupFile();
-  if (isSetUpFilePresent) {
+  if (!isSetUpFilePresent) {
     return window.showErrorMessage(`Please setup your project`);
   }
 
@@ -26,7 +26,6 @@ export const upload = async (env: { [key: string]: string | number }) => {
     async () => {
       try {
         await uploadSecretsToOnboardbase(
-          config.setup.project,
           config.setup.environment,
           env,
         );

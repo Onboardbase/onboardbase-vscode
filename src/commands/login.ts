@@ -23,6 +23,7 @@ export const loginToOnboardBase = async () => {
       hostname,
       hostARCH,
     );
+
     const cwd = workspace.workspaceFolders[0].uri.path;
     const dashboardHost =
       allConfigs[cwd]?.['dashboard-host'] ??
@@ -33,11 +34,6 @@ export const loginToOnboardBase = async () => {
 
     if (!allConfigs['/'] || !allConfigs['/']?.token) {
       //TODO ask user if they want to open auth page in browser
-      // const browserOption = await window.showQuickPick(['Yes', 'No'], {
-      //   title: 'Open the authorization page in your browser?',
-      // });
-
-      // if (browserOption === 'Yes') {}
       await open(authUrl);
       window.showInformationMessage('Waiting for browser authentication');
     }

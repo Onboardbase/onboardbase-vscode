@@ -25,12 +25,10 @@ export const search = async () => {
         },
         async () => {
           const { env } = await fetchRawSecrets(
-            config.setup.project,
             config.setup.environment,
           );
 
-          const secrets = env.map((e) => JSON.parse(e));
-          const foundSecret = secrets.find(
+          const foundSecret = env.find(
             (secret) => secret.key.toLowerCase() === secretName.toLowerCase(),
           );
           if (foundSecret) {

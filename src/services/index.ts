@@ -16,6 +16,7 @@ export const revokeAuthToken = async (token: string) => {
     return data?.data?.revokeAuthToken;
   } catch (error) {
     //console.log(chalk.bold.red("Could not revoke auth token"));
+    console.error(error);
     vscode.window.showErrorMessage('Could not revoke auth token');
   }
 };
@@ -54,7 +55,6 @@ export const generateAccessToken = async (authToken: string) => {
   if (data.errors) {
     throw new Error('An error occured. Pls try again.');
   }
-
   ConfigManager.storeBackendPublicKey(
     data?.data?.authenticateToken?.backendPublicKey,
   );
@@ -202,7 +202,11 @@ export const getAuthToken = async (pollingCode: string): Promise<any> => {
   }`;
 
   const currentApiHost = instance.defaults.baseURL;
-  ConfigManager.setAuthApiHost(currentApiHost);
-  const { data } = await instance.post('', { query });
-  return data;
+  try {
+    ConfigManager.setAuthApiHost(currentApiHost);
+    const { data } = await instance.post('', { query });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
 };
