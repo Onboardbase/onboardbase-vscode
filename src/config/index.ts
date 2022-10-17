@@ -4,7 +4,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import * as YAML from 'yaml';
 import { encryptSecrets, getShellRc, isExist, isUnix } from '../utils';
-import * as chalk from 'chalk';
+// import * as chalk from 'chalk';
 import * as rimraf from 'rimraf';
 import axios from 'axios';
 import * as vscode from 'vscode';
@@ -450,7 +450,7 @@ class ConfigManager {
 
   async deleteOnboardbaseConfigs() {
     rimraf.sync(this.onboardbaseDirectory);
-    console.log(chalk.green('onboardbase artifacts deleted successfully...'));
+    // console.log(chalk.green('onboardbase artifacts deleted successfully...'));
     process.nextTick(process.exit(1));
   }
 
