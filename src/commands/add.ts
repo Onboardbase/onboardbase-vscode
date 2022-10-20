@@ -34,7 +34,13 @@ export const add = async (local?: boolean) => {
         }
 
         await ConfigManager.init();
-        let config = ConfigManager.getProjectConfig();
+        const ymlFiles = await workspace.findFiles(
+          '.onboardbase.yaml',
+          '**/node_modules/**',
+        );
+        const configData = await workspace.fs.readFile(ymlFiles[0]);
+        let config = YAML.parse(Buffer.from(configData).toString('utf8'));
+        console.log(config);
 
         if (config?.secrets?.local) {
           config.secrets.local = [
@@ -42,9 +48,10 @@ export const add = async (local?: boolean) => {
             { [secretName]: secret },
           ];
         } else {
-          config = Object.assign(config, {
+          config = {
+            ...config,
             secrets: { local: [{ [secretName]: secret }] },
-          });
+          };
         }
 
         const updatedConfig = YAML.stringify(config);
