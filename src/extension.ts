@@ -14,6 +14,7 @@ import {
   upload,
   search,
 } from './commands';
+import { addMergeRequest } from './commands/mergeRequest';
 import { CodelensProvider } from './config/CodeLensProvider';
 import { parseEnvContentToObject } from './utils';
 
@@ -81,6 +82,10 @@ export function activate(context: ExtensionContext) {
 
   commands.registerCommand('onboardbase-extension.search', async () => {
     await search();
+  });
+
+  commands.registerCommand('onboardbase-extension.merge_request', async () => {
+    await addMergeRequest();
   });
 }
 

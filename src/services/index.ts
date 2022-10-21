@@ -48,6 +48,11 @@ export const generateAccessToken = async (authToken: string) => {
         email
         id
         name
+        teams {
+          userTeamRole {
+            name
+        }
+      }
       }
     }
   }`;
@@ -91,7 +96,7 @@ export const fetchProjects = async (
         }
       }
     }
-  }`;
+  }`; 
 
   const { data } = await instance.post('', { query });
   if (data.errors) {

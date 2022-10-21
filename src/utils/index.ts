@@ -21,9 +21,14 @@ import {
   getEnvironmentId,
   rsaDecryptSecret,
 } from './authentication';
-import { addSecrets, retrieveSecrets } from '../services/new_enc';
+import {
+  addMergeRequest,
+  addSecrets,
+  retrieveSecrets,
+} from '../services/new_enc';
 import jwtDecode from 'jwt-decode';
-import { TAddSecretInput } from '../services/response.types';
+import { BaseAddSecretInput, TAddSecretInput } from '../services/response.types';
+import { add } from '../commands';
 
 export const defaultSpwanArgs: SpawnOptions = {
   shell: true,
@@ -169,7 +174,6 @@ export const fetchRawSecrets = async (
   accessToken: string;
   environmentId: string;
 }> => {
-
   const { accessToken, user } = await generateAccessToken(
     await ConfigManager.getToken(),
   );
@@ -264,7 +268,6 @@ export const uploadSecretsToOnboardbase = async (
   excludeFromExistingSecrets?: string[],
   action?: string,
 ) => {
-
   const { env, accessToken, environmentId } = await fetchRawSecrets(
     currentEnvironment,
   );
@@ -294,7 +297,7 @@ export const uploadSecretsToOnboardbase = async (
   const encryptionKey = getEncryptionAndDecryptionKey(accessToken);
   const newSecrets: TAddSecretInput[] = [];
 
-  for(let [key, value] of Object.entries(parsedJSON)) {
+  for (let [key, value] of Object.entries(parsedJSON)) {
     const secret = {
       key: await encryptSecrets(key.toUpperCase(), encryptionKey),
       value: await encryptSecrets(value, encryptionKey),
@@ -305,4 +308,29 @@ export const uploadSecretsToOnboardbase = async (
   }
 
   await addSecrets(accessToken, newSecrets);
+};
+
+export const createMergeRequest = async (
+  currentEnvironment: string,
+  env: { key: string; value: string },
+  comments: string,
+) => {
+  const { accessToken } = await generateAccessToken(
+    await ConfigManager.getToken(),
+  );
+
+  const environmentId = await getEnvironmentId(currentEnvironment, accessToken);
+  const encryptionKey = getEncryptionAndDecryptionKey(accessToken);
+
+  const secret: BaseAddSecretInput = {
+    key: await encryptSecrets(env.key, encryptionKey),
+    value: await encryptSecrets(env.value, encryptionKey),
+    comment: await encryptSecrets(comments, encryptionKey),
+  };
+
+  await addMergeRequest(secret, {
+    environmentId,
+    accessToken,
+    comment: comments,
+  });
 };

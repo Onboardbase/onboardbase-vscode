@@ -3,10 +3,22 @@ import { commands, window, workspace } from 'vscode';
 import * as YAML from 'yaml';
 
 import ConfigManager from '../config';
+import { generateAccessToken } from '../services';
+import {getEncryptionAndDecryptionKey} from '../utils/authentication'
 
 export const add = async (local?: boolean) => {
   const editor = window.activeTextEditor;
   // const terminal = window.activeTerminal;
+  // try {
+  //           await ConfigManager.init();
+  //       const { user } = await generateAccessToken(
+  //   await ConfigManager.getToken(),
+  // );
+  // console.log({user});
+  // } catch (error) {
+  //   console.log(error)
+  // }
+
   if (editor) {
     const document = editor.document;
     const selection = editor.selection;
@@ -40,7 +52,6 @@ export const add = async (local?: boolean) => {
         );
         const configData = await workspace.fs.readFile(ymlFiles[0]);
         let config = YAML.parse(Buffer.from(configData).toString('utf8'));
-        console.log(config);
 
         if (config?.secrets?.local) {
           config.secrets.local = [

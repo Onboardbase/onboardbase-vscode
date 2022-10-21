@@ -45,3 +45,13 @@ export interface TAddSecretInput {
   mergeRequestId?: string;
   parent?: string;
 }
+
+export interface BaseAddSecretInput {
+  key?: string;
+  value?: string;
+  title?: string;
+  username?: string;
+  password?: string;
+  url?: string;
+  comment?: string;
+}

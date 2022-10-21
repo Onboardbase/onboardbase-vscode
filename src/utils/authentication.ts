@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { window } from 'vscode';
 import { homedir } from 'os';
 import { join } from 'path';
 import { workspace } from 'vscode';
@@ -9,6 +10,21 @@ import CryptoJS = require('crypto-js');
 import { fetchProjects } from '../services';
 import ConfigManager from '../config';
 import jwtDecode from 'jwt-decode';
+
+export const checkSetupFile = async (): Promise<
+  Thenable<string | undefined> | boolean
+> => {
+  if (!window.activeTextEditor) {
+    return window.showInformationMessage('Please open a folder or workspace');
+  }
+  const ymlFiles = await workspace.findFiles(
+    '.onboardbase.yaml',
+    '**/node_modules/**',
+  );
+
+  return ymlFiles.length > 0;
+};
+
 
 export const getEnvironmentId = async (
   env: string,

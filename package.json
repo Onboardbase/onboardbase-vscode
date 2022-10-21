@@ -44,6 +44,10 @@
         "title": "Onboardbase: Retrieve Secret From Onboardbase"
       },
       {
+        "command": "onboardbase-extension.merge_request",
+        "title": "Onbaordbase: Create Merge Request"
+      },
+      {
         "title": "Onboardbase: Enable Secret CodeLens",
         "command": "onboardbase-codelens.enableCodeLens"
       },

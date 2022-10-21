@@ -1,5 +1,5 @@
 import ConfigManager from '../config';
-import { TAddSecretInput, TFetchSecrets } from './response.types';
+import { BaseAddSecretInput, TAddSecretInput, TFetchSecrets } from './response.types';
 
 export const retrieveSecrets = async (
   environmentId: string,
@@ -30,6 +30,31 @@ export const retrieveSecrets = async (
     );
   }
   return data.data.generalSecrets;
+};
+
+export const addMergeRequest = async (
+  secret: BaseAddSecretInput,
+  meta: { accessToken: string; environmentId: string; comment?: string },
+) => {
+  const query = `mutation addMergeRequest ($addSecretsInput: [BaseAddSecretInput!]) {
+  addMergeRequest(addMergeRequestInput: { environmentId: "${meta.environmentId}", comment: "${meta.comment}", secrets: $addSecretsInput }) {
+    comment
+  }
+}`;
+
+  const variables = {
+    addSecretsInput: [secret],
+  };
+  const instance = ConfigManager.getHttpInstance();
+  instance.defaults.headers['Authorization'] = `Bearer ${meta.accessToken}`;
+
+  const { data } = await instance.post('', { query, variables });
+  if (data.errors && data.errors[0].message === 'Unauthorized') {
+    throw new Error(
+      "Sorry you don't have access to this project environment any longer, please contact admin",
+    );
+  }
+  return data;
 };
 
 export const addSecrets = async (
