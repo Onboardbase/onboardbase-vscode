@@ -1,7 +1,7 @@
 {
   "name": "onboardbase-extension",
   "displayName": "Onboardbase",
-  "description": "Onboardbase is an all-in-one SecretOps infrastructure for securing environment configs/secret credentials across all stages from development to production",
+  "description": "Onboardbase is an app secret infrastructure for dev teams to securely share and work with environment-specific configs synced across every development stage, infrastructure and teammates without compromising security.",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.71.0"

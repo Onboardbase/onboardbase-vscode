@@ -1,4 +1,4 @@
-# Onboardbase VSCode Extension
+# Onboardbase for VSCode
 
 Onboardbase is an all-in-one SecretOps infrastructure for securing environment configs/secret credentials across all stages from development to production.
 
