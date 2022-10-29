@@ -1,13 +1,24 @@
 {
   "name": "onboardbase-extension",
   "displayName": "Onboardbase Extension",
-  "description": "",
-  "version": "0.2.1",
+  "description": "Onboardbase is an all-in-one SecretOps infrastructure for securing environment configs/secret credentials across all stages from development to production",
+  "version": "0.0.1",
   "engines": {
     "vscode": "^1.71.0"
   },
   "categories": [
     "Other"
+  ],
+  "icon": "images/png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Onboardbase/vscode-extension"
+  },
+  "homepage": "https://github.com/Onboardbase/vscode-extension#readme",
+  "publisher": "onboardbase",
+  "keywords": [
+    "secrets",
+    "onboardbase"
   ],
   "activationEvents": [
     "onStartupFinished",

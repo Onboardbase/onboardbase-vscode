@@ -15,8 +15,7 @@ To use the extension after installtion, open the command pallete `cmd + shift + 
 - Logout: `Onboardbase: Logout`
 - Upload Secret: `Onboardbase: Upload Secret To Onboardbase`
 - Add Secret to Local Config: `Onboardbase: Add Secret To Local Config`
-- Search/Retrive Secret: `Onboardbase: Retrieve Secret From Onboardbase`
-
+- Merge Requests: `Onboardbase: Create Merge Request`
 ## Requirements
 
 - vscode version 1.7.0 and above
