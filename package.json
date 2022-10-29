@@ -9,7 +9,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "images/png",
+  "icon": "images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/Onboardbase/vscode-extension"
