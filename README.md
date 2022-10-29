@@ -1,71 +1,36 @@
-# onboardbase-extension README
+# Onboardbase VSCode Extension
 
-This is the README for your extension "onboardbase-extension". After writing up a brief description, we recommend including the following sections.
+Onboardbase is an all-in-one SecretOps infrastructure for securing environment configs/secret credentials across all stages from development to production.
+
+Our vscode extension provides easy access to secrets from local development to production in every development stage by retrieving, adding and uploading secrets without leaving the comfort of your text editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+The extension enables uploading secrets to onboardbase, converting a text to a secret in your local config, setting up a project and a codelens over env files propmting addition of the secret to onboardbase.
 
-For example if there is an image subfolder under your extension project workspace:
+To use the extension after installtion, open the command pallete `cmd + shift + P` and type in one of the below commands:
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
+- Login: `Onboardbase: Login To Onboardbase`
+- Setup: `Onboardbase: Setup Project`
+- Logout: `Onboardbase: Logout`
+- Upload Secret: `Onboardbase: Upload Secret To Onboardbase`
+- Add Secret to Local Config: `Onboardbase: Add Secret To Local Config`
+- Merge Requests: `Onboardbase: Create Merge Request`
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- vscode version 1.7.0 and above
+- Node and NPM installed
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
+To enable codelens for `.env` files, the setting needs to be activated.
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* `onboardbase-codelens.enableCodelens`: Enables/disables `.env` codelens.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release of the extension
