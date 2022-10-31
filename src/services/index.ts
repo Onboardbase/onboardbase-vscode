@@ -271,3 +271,47 @@ export const createProject = async (
     if (error.response.data) console.error(error.response.data);
   }
 };
+
+export const getTeamMateByCode = async (code: string): Promise<string> => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `query {
+  newEmployee(confirmationCode: "${code}") {
+    id
+    teamName
+  }
+}`;
+
+  try {
+    const { data } = await instance.post("", { query });
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+    return data.data.newEmployee.id;
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+export const teamMateSignup = async (data: {
+  name: string;
+  userId: string;
+}) => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `mutation {
+  setupNewEmployeeProfile(id: "${data.userId}", userInput: {name: "${data.name}"}) {
+    accessToken
+  }
+}`;
+
+  try {
+    const { data } = await instance.post("", { query });
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};

@@ -14,6 +14,7 @@ import {
   upload,
   search,
   init,
+  teammate
 } from './commands';
 import { addMergeRequest } from './commands/mergeRequest';
 import { CodelensProvider } from './config/CodeLensProvider';
@@ -91,6 +92,10 @@ export function activate(context: ExtensionContext) {
 
   commands.registerCommand('onboardbase-extension.init', async () => {
     await init();
+  });
+
+  commands.registerCommand('onboardbase-extension.teammate', async () => {
+    await teammate();
   });
 }
 

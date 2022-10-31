@@ -6,3 +6,4 @@ export { add } from './add';
 export { upload } from './upload';
 export { search } from './search';
 export { init } from './init';
+export { teammate } from './teammate';
