@@ -26,19 +26,19 @@ To use the extension after installation, open the command pallete `cmd + shift +
 
 - Login: This command logs you in by opening a web browser from your vscode. 
 
-![Login GIF](./images/login.gif)
+![Login GIF](images/login.gif)
 
 - Setup: After logging in, and having access to projects, you can move on to setting up for your development environment by setting up the project.
 
-![Setup GIF](./images/setup.gif)
+![Setup GIF](images/setup.gif)
 
 - Logout: To revoke an authentication token, all you need to do is logout. 
 
-![Logout GIF](./images/logout.gif)
+![Logout GIF](images/logout.gif)
 
 - Add Secrets Locally: To add secrets to uour local environment, you can highlight a text and then run the Add command.
 
-![Add secrets](./images/add_secrets.gif)
+![Add secrets](images/add_secrets.gif)
 ## Extension Settings
 
 To enable codelens for `.env` files, the setting needs to be activated.
