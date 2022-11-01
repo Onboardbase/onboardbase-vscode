@@ -18,7 +18,11 @@
   "publisher": "onboardbase",
   "keywords": [
     "secrets",
-    "onboardbase"
+    "onboardbase",
+    "security",
+    "env",
+    "configs",
+    "vault"
   ],
   "activationEvents": [
     "onStartupFinished",
