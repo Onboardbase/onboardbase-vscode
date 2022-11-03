@@ -37,7 +37,12 @@ export const teammate = async () => {
     await commands.executeCommand('onboardbase-extension.login');
     await commands.executeCommand('onboardbase-extension.setup');
 
-    window.showInformationMessage('Welcome to Onboardbase');
+    window.showInformationMessage(
+      'Start your project with onboardbase run “start command”',
+    );
+    window.showInformationMessage(
+      'Check out your account at: https://app.onboardbase.com',
+    );
   } catch (error) {
     window.showErrorMessage(error.name);
     return;

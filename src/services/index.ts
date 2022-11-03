@@ -266,7 +266,10 @@ export const createProject = async (
 
   try {
     const { data } = await instance.post('', { query });
-    if (data.errors) throw new Error(data.errors[0].message);
+    if (data.errors) {
+      console.log(data.errors);
+      throw new Error(data.errors[0].message)
+    };
   } catch (error) {
     if (error.response.data) console.error(error.response.data);
   }

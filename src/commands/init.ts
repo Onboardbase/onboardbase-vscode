@@ -11,6 +11,7 @@ import {
   signup,
 } from '../services';
 import { getMachineID } from '../utils';
+import { setUpProject } from './setUpHelper';
 
 export const init = async () => {
   await ConfigManager.init('Login');
@@ -20,6 +21,11 @@ export const init = async () => {
     title: 'Email Address',
     prompt: 'Please Input Your Email Address',
   });
+  if (!email) {
+    window.showErrorMessage('Please add your email address');
+    return;
+  }
+
   const hostname = os.hostname();
   const hostARCH = os.arch();
   const fingerprint = await getMachineID();
@@ -102,10 +108,10 @@ export const init = async () => {
               return new Promise<void>((resolve) => resolve());
             }
 
+            window.showInformationMessage('Creating Project...');
             const { accessToken } = await generateAccessToken(
               await ConfigManager.getToken(),
             );
-            window.showInformationMessage('Creating Project...');
             await createProject(accessToken, projectTitle, '');
             window.showInformationMessage(
               `Project ${projectTitle} created successfully`,
@@ -124,12 +130,14 @@ export const init = async () => {
 
             /* Setup Project */
             window.showInformationMessage('Setting Up Your Project');
-            commands.executeCommand('onboardbase-extension.setup', {
-              project: projectTitle,
-              environment: environment?.[0],
-            });
+            await setUpProject(projectTitle, environment?.[0]);
 
-            window.showInformationMessage('Welcome to Onboardbase');
+            window.showInformationMessage(
+              'Start your project with onboardbase run “start command”',
+            );
+            window.showInformationMessage(
+              'Check out your account at: https://app.onboardbase.com',
+            );
           }
         }
       }, pollingInterval);
