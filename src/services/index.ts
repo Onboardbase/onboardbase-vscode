@@ -303,7 +303,7 @@ export const teamMateSignup = async (data: {
 }) => {
   const instance = ConfigManager.getHttpInstance();
   const query = `mutation {
-  setupNewEmployeeProfile(id: "${data.userId}", authCode: "${data.authCode}", fromCliOrExtension: true, userInput: {name: "${data.name}", confirmationCode: "${data.confirmationCode}"}) {
+  setupNewEmployeeProfile(id: "${data.userId}", authCode: "${data.authCode}", fromNonBrowserEnvironment: true, userInput: {name: "${data.name}", confirmationCode: "${data.confirmationCode}"}) {
     accessToken
   }
 }`;
