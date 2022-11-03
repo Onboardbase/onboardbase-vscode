@@ -1,4 +1,4 @@
-import { commands, window } from 'vscode';
+import { window } from 'vscode';
 import * as os from 'os';
 
 import ConfigManager from '../config';
@@ -37,6 +37,7 @@ export const init = async () => {
     hostname,
     hostARCH,
   );
+
   const name = email.substring(0, email.lastIndexOf('@'));
   const domain = email.substring(email.lastIndexOf('@') + 1);
   if (!name || !domain) {
@@ -92,7 +93,8 @@ export const init = async () => {
                 requirePasswordForCurrentSession: false,
               }),
             );
-
+            
+            clearTimeout(intervalTimeout);
             window.showInformationMessage(
               'Verification Complete. You are now logged in',
             );

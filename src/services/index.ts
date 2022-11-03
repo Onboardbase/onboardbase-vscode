@@ -268,8 +268,8 @@ export const createProject = async (
     const { data } = await instance.post('', { query });
     if (data.errors) {
       console.log(data.errors);
-      throw new Error(data.errors[0].message)
-    };
+      throw new Error(data.errors[0].message);
+    }
   } catch (error) {
     if (error.response.data) console.error(error.response.data);
   }
@@ -285,36 +285,36 @@ export const getTeamMateByCode = async (code: string): Promise<string> => {
 }`;
 
   try {
-    const { data } = await instance.post("", { query });
-    if (data.errors) {
+    const { data } = await instance.post('', { query });
+    if (data?.errors) {
       throw new Error(data.errors[0].message);
     }
     return data.data.newEmployee.id;
   } catch (error) {
     console.error(error);
-    process.exit(1);
   }
 };
 
 export const teamMateSignup = async (data: {
   name: string;
   userId: string;
+  authCode: string;
+  confirmationCode: string;
 }) => {
   const instance = ConfigManager.getHttpInstance();
   const query = `mutation {
-  setupNewEmployeeProfile(id: "${data.userId}", userInput: {name: "${data.name}"}) {
+  setupNewEmployeeProfile(id: "${data.userId}", authCode: "${data.authCode}", fromCliOrExtension: true, userInput: {name: "${data.name}", confirmationCode: "${data.confirmationCode}"}) {
     accessToken
   }
 }`;
 
   try {
-    const { data } = await instance.post("", { query });
+    const { data } = await instance.post('', { query });
     if (data.errors) {
       throw new Error(data.errors[0].message);
     }
     return data;
   } catch (error) {
     console.error(error);
-    process.exit(1);
   }
 };
