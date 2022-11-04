@@ -1,5 +1,5 @@
 import * as os from 'os';
-import * as open from 'open';
+import open from 'open';
 import { StatusBarItem, window, workspace } from 'vscode';
 
 import ConfigManager from '../config';

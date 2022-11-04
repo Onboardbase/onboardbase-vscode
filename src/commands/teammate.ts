@@ -1,4 +1,4 @@
-import { commands, window } from 'vscode';
+import { window } from 'vscode';
 import * as os from 'os';
 
 import { getMachineID } from '../utils';
@@ -29,6 +29,7 @@ export const teammate = async () => {
     value: '',
     title: 'Link',
     prompt: 'Please Input The Link You Received in Your Email',
+    ignoreFocusOut: true,
   });
 
   if (!signupLink) {
@@ -52,26 +53,27 @@ export const teammate = async () => {
       value: '',
       title: 'Name',
       prompt: 'Please Input Your Name',
+          ignoreFocusOut: true,
     });
 
     const userId = await getTeamMateByCode(confirmationCode);
-    
+
     const allConfigs = ConfigManager.getConfigs();
     let newConfig = {
       scope: '/',
       token: undefined,
     };
-    
+
     const pollingInterval = 4000; // 4secs
     const pollingTimeout = 300000; // 5mins
     let authTokenResponse = await getAuthToken(pollingCode);
     let isAuthenticated = false;
-    
+
     const dashboardHost =
-    allConfigs[process.cwd()]?.['dashboard-host'] ??
-    allConfigs['/']?.['dashboard-host'] ??
-    'https://app.onboardbase.com';
-    
+      allConfigs[process.cwd()]?.['dashboard-host'] ??
+      allConfigs['/']?.['dashboard-host'] ??
+      'https://app.onboardbase.com';
+
     await teamMateSignup({ userId, name, authCode, confirmationCode });
 
     if (authTokenResponse?.errors) {
@@ -93,7 +95,7 @@ export const teammate = async () => {
                 requirePasswordForCurrentSession: false,
               }),
             );
-        
+
             window.showInformationMessage('Account Setup Completed');
             window.showInformationMessage(
               'Verification Complete. You are now logged in',

@@ -267,7 +267,6 @@ export const createProject = async (
   try {
     const { data } = await instance.post('', { query });
     if (data.errors) {
-      console.log(data.errors);
       throw new Error(data.errors[0].message);
     }
   } catch (error) {
@@ -280,10 +279,8 @@ export const getTeamMateByCode = async (code: string): Promise<string> => {
   const query = `query {
   newEmployee(confirmationCode: "${code}") {
     id
-    teamName
   }
 }`;
-
   try {
     const { data } = await instance.post('', { query });
     if (data?.errors) {

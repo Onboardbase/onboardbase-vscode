@@ -22,42 +22,40 @@ export const setUp = async () => {
       await ConfigManager.getToken(),
     );
 
-      let projects = await fetchProjects(accessToken);
-      projects = projects.filter(({ member }) => member);
+    let projects = await fetchProjects(accessToken);
+    projects = projects.filter(({ member }) => member);
 
-      const { team }: { team: { name: string } } = jwtDecode(accessToken);
-      if (Array.isArray(projects) && projects.length === 0) {
-        return vscode.window.showInformationMessage(
-          `Sorry you don't have any project under the ${team.name} team, please signin to Onboardbase and create a project.`,
-        );
-      }
-
-      const modifiedProjects = projects.map((project) =>
-        Object.assign(project, {
-          environments: {
-            list: project.environments.list.filter(({ member }) => member),
-          },
-        }),
+    const { team }: { team: { name: string } } = jwtDecode(accessToken);
+    if (Array.isArray(projects) && projects.length === 0) {
+      return vscode.window.showInformationMessage(
+        `Sorry you don't have any project under the ${team.name} team, please signin to Onboardbase and create a project.`,
       );
+    }
 
-      const project = await vscode.window.showQuickPick(
-        modifiedProjects.map((project) => project.title),
-        {
-          title:
-            '(folders) Configure Onboardbase for one of the following projects',
-          ignoreFocusOut: false,
+    const modifiedProjects = projects.map((project) =>
+      Object.assign(project, {
+        environments: {
+          list: project.environments.list.filter(({ member }) => member),
         },
-      );
+      }),
+    );
 
-      const environments = modifiedProjects
-        .find(({ title }) => project === title)
-        ?.environments.list.map(({ title }) => title);
-      const pickedEnv = await vscode.window.showQuickPick(environments, {
-        title: `Select an environment for (${project})`,
-      });
-      setUpProject(project, pickedEnv);
+    const project = await vscode.window.showQuickPick(
+      modifiedProjects.map((project) => project.title),
+      {
+        title:
+          '(folders) Configure Onboardbase for one of the following projects',
+        ignoreFocusOut: false,
+      },
+    );
 
-  
+    const environments = modifiedProjects
+      .find(({ title }) => project === title)
+      ?.environments.list.map(({ title }) => title);
+    const pickedEnv = await vscode.window.showQuickPick(environments, {
+      title: `Select an environment for (${project})`,
+    });
+    setUpProject(project, pickedEnv);
   } catch (err) {
     return vscode.window.showErrorMessage(err.message);
   }

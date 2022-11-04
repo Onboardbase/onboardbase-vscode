@@ -14,7 +14,7 @@ import {
   upload,
   search,
   init,
-  teammate
+  teammate,
 } from './commands';
 import { addMergeRequest } from './commands/mergeRequest';
 import { CodelensProvider } from './config/CodeLensProvider';
@@ -53,7 +53,6 @@ export function activate(context: ExtensionContext) {
       await add(true);
     }),
   );
-
 
   commands.registerCommand('onboardbase-codelens.enableCodeLens', () => {
     workspace

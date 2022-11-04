@@ -93,7 +93,7 @@ export const init = async () => {
                 requirePasswordForCurrentSession: false,
               }),
             );
-            
+
             clearTimeout(intervalTimeout);
             window.showInformationMessage(
               'Verification Complete. You are now logged in',

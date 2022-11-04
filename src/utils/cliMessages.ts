@@ -8,5 +8,6 @@ export const LOGOUT_REVOKE_TOKEN_CONFIRMATION = `Are you sure you want to revoke
 export const LOGOUT_SUCCESSFUL = `Auth token has been revoked`;
 export const GENERAL_ARROW_KEYS = `(Use arrow keys)`;
 export const LOGIN_ALREADY_LOGGED_IN = 'You have already logged in.';
-export const LOGIN_OPEN_AUTH_PAGE = 'Open the authorization page in your browser?';
+export const LOGIN_OPEN_AUTH_PAGE =
+  'Open the authorization page in your browser?';
 export const LOGIN_SUCCESSFUL = 'Authentication successful';
