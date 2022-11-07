@@ -27,7 +27,10 @@ import {
   retrieveSecrets,
 } from '../services/new_enc';
 import jwtDecode from 'jwt-decode';
-import { BaseAddSecretInput, TAddSecretInput } from '../services/response.types';
+import {
+  BaseAddSecretInput,
+  TAddSecretInput,
+} from '../services/response.types';
 import { add } from '../commands';
 
 export const defaultSpwanArgs: SpawnOptions = {

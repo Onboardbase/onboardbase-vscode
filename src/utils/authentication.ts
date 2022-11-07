@@ -4,7 +4,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { workspace } from 'vscode';
 import * as YAML from 'yaml';
-import * as NodeRSA from 'node-rsa';
+import NodeRSA from 'node-rsa';
 import { getEncryptionPassphrase } from '.';
 import CryptoJS = require('crypto-js');
 import { fetchProjects } from '../services';
@@ -24,7 +24,6 @@ export const checkSetupFile = async (): Promise<
 
   return ymlFiles.length > 0;
 };
-
 
 export const getEnvironmentId = async (
   env: string,

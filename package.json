@@ -12,9 +12,9 @@
   "icon": "images/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Onboardbase/vscode-extension"
+    "url": "https://github.com/Onboardbase/onboardbase-vscode"
   },
-  "homepage": "https://github.com/Onboardbase/vscode-extension#readme",
+  "homepage": "https://github.com/Onboardbase/onboardbase-vscode#readme",
   "publisher": "onboardbase",
   "keywords": [
     "secrets",
@@ -69,6 +69,14 @@
       {
         "title": "Onboardbase: Disable Secret Codelens",
         "command": "onboardbase-codelens.disableCodeLens"
+      },
+      {
+        "title": "Onboardbase: Sign Up",
+        "command": "onboardbase-extension.init"
+      },
+      {
+        "title": "Onboardbase: Teammate Signup",
+        "command": "onboardbase-extension.teammate"
       }
     ]
   },
@@ -98,9 +106,12 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
+    "esbuild": "^0.15.13",
     "eslint": "^8.20.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {

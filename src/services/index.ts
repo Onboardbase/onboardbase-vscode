@@ -96,7 +96,7 @@ export const fetchProjects = async (
         }
       }
     }
-  }`; 
+  }`;
 
   const { data } = await instance.post('', { query });
   if (data.errors) {
@@ -213,5 +213,105 @@ export const getAuthToken = async (pollingCode: string): Promise<any> => {
     return data;
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const signup = async (data: {
+  email: string;
+  name: string;
+  teamName: string;
+  authCode: string;
+}) => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `mutation {
+  signup(registrationInput: {email: "${data.email}", teamName: "${data.teamName}", name: "${data.name}", cliSignUpAuthCode: "${data.authCode}"}) {
+    backendPublicKey
+  }
+}`;
+
+  try {
+    const { data } = await instance.post('', { query });
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+export const createProject = async (
+  accessToken: string,
+  title: string,
+  description: string,
+  environment?: string,
+): Promise<void> => {
+  const instance = ConfigManager.getHttpInstance();
+  instance.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+
+  const query = `mutation {
+    addProject(
+      addProjectInput: {
+        title: "${title}"
+        ${description ? `description: "${description}"` : ''}
+        ${environment ? `environment: "${environment}"` : ''}
+        type: "api_keys"
+      }
+    ) {
+      id
+    }
+  }
+  `;
+
+  try {
+    const { data } = await instance.post('', { query });
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+  } catch (error) {
+    if (error.response.data) console.error(error.response.data);
+  }
+};
+
+export const getTeamMateByCode = async (code: string): Promise<string> => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `query {
+  newEmployee(confirmationCode: "${code}") {
+    id
+  }
+}`;
+  try {
+    const { data } = await instance.post('', { query });
+    if (data?.errors) {
+      throw new Error(data.errors[0].message);
+    }
+    return data.data.newEmployee.id;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const teamMateSignup = async (data: {
+  name: string;
+  userId: string;
+  authCode: string;
+  confirmationCode: string;
+}) => {
+  const instance = ConfigManager.getHttpInstance();
+  const query = `mutation {
+  setupNewEmployeeProfile(id: "${data.userId}", authCode: "${data.authCode}", fromNonBrowserEnvironment: true, userInput: {name: "${data.name}", confirmationCode: "${data.confirmationCode}"}) {
+    accessToken
+  }
+}`;
+
+  try {
+    const { data } = await instance.post('', { query });
+    if (data.errors) {
+      throw new Error(data.errors[0].message);
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
   }
 };
