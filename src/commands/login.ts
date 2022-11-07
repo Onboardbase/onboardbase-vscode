@@ -1,6 +1,6 @@
 import * as os from 'os';
 import open from 'open';
-import { StatusBarItem, window, workspace } from 'vscode';
+import { window, workspace } from 'vscode';
 
 import ConfigManager from '../config';
 import { getMachineID } from '../utils';
@@ -14,7 +14,6 @@ export const loginToOnboardBase = async () => {
   const fingerprint = await getMachineID();
   const hostOS = os.platform();
   const allConfigs = ConfigManager.getConfigs();
-  let statusBar: StatusBarItem;
 
   try {
     const { pollingCode, authCode } = await generateAuthCode(
@@ -38,13 +37,12 @@ export const loginToOnboardBase = async () => {
       window.showInformationMessage('Waiting for browser authentication');
     }
 
-    let newConfig = {
+    const newConfig = {
       scope: '/',
       token: undefined,
     };
 
     if (allConfigs['/']?.token && allConfigs['/']?.token !== undefined) {
-      const scopedConfig = ConfigManager.getScopedConfig();
       window.showInformationMessage('You have logged in already');
       //TODO Handle overwriring the login
     }
@@ -55,8 +53,7 @@ export const loginToOnboardBase = async () => {
 
     let isAuthenticated = false;
     if (authTokenResponse?.errors) {
-      let intervalHandler: NodeJS.Timeout;
-      intervalHandler = setInterval(async () => {
+      const intervalHandler = setInterval(async () => {
         if (!isAuthenticated) {
           authTokenResponse = await getAuthToken(pollingCode);
           if (!authTokenResponse?.errors) {

@@ -57,7 +57,7 @@ export const init = async () => {
     );
 
     const allConfigs = ConfigManager.getConfigs();
-    let newConfig = {
+    const newConfig = {
       scope: '/',
       token: undefined,
     };
@@ -75,8 +75,7 @@ export const init = async () => {
       'https://app.onboardbase.com';
 
     if (authTokenResponse?.errors) {
-      let intervalHandler: NodeJS.Timeout;
-      intervalHandler = setInterval(async () => {
+      const intervalHandler = setInterval(async () => {
         if (!isAuthenticated) {
           authTokenResponse = await getAuthToken(pollingCode);
           if (!authTokenResponse?.errors) {

@@ -44,7 +44,7 @@ export const addMergeRequest = async () => {
     '**/node_modules/**',
   );
   const configData = await workspace.fs.readFile(ymlFiles[0]);
-  let config = YAML.parse(Buffer.from(configData).toString('utf8'));
+  const config = YAML.parse(Buffer.from(configData).toString('utf8'));
 
   window.withProgress(
     {

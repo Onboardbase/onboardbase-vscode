@@ -42,7 +42,7 @@ class ConfigManager {
     privateKey: undefined,
     backendPublicKey: undefined,
   };
-  private authApiHost: string = '';
+  private authApiHost = '';
   private cwd = vscode.workspace.workspaceFolders[0].uri.path;
   // private authSessionDetails: {
   //   email: string;
@@ -50,7 +50,7 @@ class ConfigManager {
   //   teamRole: { id: string; name: string };
   //   project: { id: string };
   // };
-  public shouldCreateProjectLog: boolean = true;
+  public shouldCreateProjectLog = true;
   private projectFallbackConfigFile = join(this.cwd, 'onboardbase.yaml');
   private projectNewConfigFile = join(this.cwd, '.onboardbase.yaml');
   /**
@@ -289,7 +289,7 @@ class ConfigManager {
       readFileSync(this.onboardbaseConfigFile, { encoding: 'utf8' }),
     );
 
-    let data: { scoped: { [key: string]: string } } = {
+    const data: { scoped: { [key: string]: string } } = {
       scoped: {},
     };
 

@@ -8,10 +8,9 @@ import {
   readFile,
   uploadSecretsToOnboardbase,
 } from '../utils';
-import ConfigManager from '../config';
 
 export const setUpProject = async (project: string, pickedEnv: string) => {
-  let config = YAML.stringify({
+  const config = YAML.stringify({
     setup: {
       project: project,
       environment: pickedEnv,

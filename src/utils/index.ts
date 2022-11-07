@@ -5,33 +5,23 @@ import * as CryptoJS from 'crypto-js';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import isWsl = require('is-wsl');
-import { v4 as uuidv4 } from 'uuid';
 
 import { isDocker } from './isDocker';
-import {
-  fetchSecrets,
-  generateAccessToken,
-  updateEnvironment,
-} from '../services';
+import { generateAccessToken } from '../services';
 import ConfigManager from '../config';
 import {
-  aesDecryptSecret,
-  encryptWithAESAndRSA,
   getEncryptionAndDecryptionKey,
   getEnvironmentId,
-  rsaDecryptSecret,
 } from './authentication';
 import {
   addMergeRequest,
   addSecrets,
   retrieveSecrets,
 } from '../services/new_enc';
-import jwtDecode from 'jwt-decode';
 import {
   BaseAddSecretInput,
   TAddSecretInput,
 } from '../services/response.types';
-import { add } from '../commands';
 
 export const defaultSpwanArgs: SpawnOptions = {
   shell: true,
@@ -251,7 +241,7 @@ export const formatDate = (date: string, sec?) => {
   }
 };
 
-export const removeDuplicateSecrete = (data: Object[]) => {
+export const removeDuplicateSecrete = (data: Record<string, string>[]) => {
   const comparisonMap = {};
   const cleanArr = [];
   data.map((currentSecret: { [key: string]: string }) => {
@@ -267,7 +257,7 @@ export const removeDuplicateSecrete = (data: Object[]) => {
 
 export const uploadSecretsToOnboardbase = async (
   currentEnvironment: string,
-  parsedJSON: Object,
+  parsedJSON: Record<string, string>,
   excludeFromExistingSecrets?: string[],
   action?: string,
 ) => {
@@ -300,7 +290,7 @@ export const uploadSecretsToOnboardbase = async (
   const encryptionKey = getEncryptionAndDecryptionKey(accessToken);
   const newSecrets: TAddSecretInput[] = [];
 
-  for (let [key, value] of Object.entries(parsedJSON)) {
+  for (const [key, value] of Object.entries(parsedJSON)) {
     const secret = {
       key: await encryptSecrets(key.toUpperCase(), encryptionKey),
       value: await encryptSecrets(value, encryptionKey),

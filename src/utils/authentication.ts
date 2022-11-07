@@ -97,7 +97,6 @@ export const getFrontendEncryptionKey = (): string => {
 };
 
 export const aesDecryptSecret = (secret: string) => {
-  const passphrase = getFrontendEncryptionKey();
   const key = ConfigManager.getRsaKeys().privateKey as string;
   return decryptSecrets(secret, key);
 };
