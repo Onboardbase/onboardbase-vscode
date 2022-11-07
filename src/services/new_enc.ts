@@ -1,5 +1,9 @@
 import ConfigManager from '../config';
-import { BaseAddSecretInput, TAddSecretInput, TFetchSecrets } from './response.types';
+import {
+  BaseAddSecretInput,
+  TAddSecretInput,
+  TFetchSecrets,
+} from './response.types';
 
 export const retrieveSecrets = async (
   environmentId: string,

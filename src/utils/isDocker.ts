@@ -1,10 +1,10 @@
-import * as fs from "fs";
+import * as fs from 'fs';
 
 let isDockerCached: boolean;
 
 const hasDockerEnv = () => {
   try {
-    fs.statSync("/.dockerenv");
+    fs.statSync('/.dockerenv');
     return true;
   } catch {
     return false;
@@ -13,7 +13,7 @@ const hasDockerEnv = () => {
 
 const hasDockerCGroup = () => {
   try {
-    return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker");
+    return fs.readFileSync('/proc/self/cgroup', 'utf8').includes('docker');
   } catch {
     return false;
   }

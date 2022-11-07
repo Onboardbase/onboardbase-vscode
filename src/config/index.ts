@@ -43,7 +43,7 @@ class ConfigManager {
     backendPublicKey: undefined,
   };
   private authApiHost: string = '';
-  private cwd = (vscode.workspace.workspaceFolders[0].uri).path;
+  private cwd = vscode.workspace.workspaceFolders[0].uri.path;
   // private authSessionDetails: {
   //   email: string;
   //   team: { id: string; name: string };

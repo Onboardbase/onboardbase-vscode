@@ -4,7 +4,7 @@ import * as YAML from 'yaml';
 
 import ConfigManager from '../config';
 import { generateAccessToken } from '../services';
-import {getEncryptionAndDecryptionKey} from '../utils/authentication'
+import { getEncryptionAndDecryptionKey } from '../utils/authentication';
 
 export const add = async (local?: boolean) => {
   const editor = window.activeTextEditor;

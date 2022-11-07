@@ -1,5 +1,5 @@
 import * as os from 'os';
-import * as open from 'open';
+import open from 'open';
 import { StatusBarItem, window, workspace } from 'vscode';
 
 import ConfigManager from '../config';
@@ -45,7 +45,7 @@ export const loginToOnboardBase = async () => {
 
     if (allConfigs['/']?.token && allConfigs['/']?.token !== undefined) {
       const scopedConfig = ConfigManager.getScopedConfig();
-      return window.showInformationMessage('You have logged in already');
+      window.showInformationMessage('You have logged in already');
       //TODO Handle overwriring the login
     }
 
