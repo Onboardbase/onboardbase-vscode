@@ -89,7 +89,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run -S esbuild-base -- --minify",
+    "vscode:prepublish": "yarn run -S esbuild-base",
     "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "build": "yarn run -S esbuild-base",
     "watch": "yarn run -S esbuild-base -- --sourcemap --watch",
