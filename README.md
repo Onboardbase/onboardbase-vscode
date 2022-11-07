@@ -26,27 +26,27 @@ To use the extension after installation, open the command pallete `cmd + shift +
 
 ## Feature Description
 
-- Login: This command logs you in by opening a web browser from your vscode. 
+- **Login**: This command logs you in by opening a web browser from your vscode. 
 
 ![Login GIF](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/login.gif)
 
-- Setup: After logging in, and having access to projects, you can move on to setting up for your development environment by setting up the project.
+- **Setup**: After logging in, and having access to projects, you can move on to setting up for your development environment by setting up the project.
 
 ![Setup GIF](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/setup.gif)
 
-- Logout: To revoke an authentication token, all you need to do is logout. 
+- **Logout**: To revoke an authentication token, all you need to do is logout. 
 
 ![Logout GIF](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/logout.gif)
 
-- Add Secrets Locally: To add secrets to uour local environment, you can highlight a text and then run the Add command.
+- **Add Secrets Locally**: To add secrets to uour local environment, you can highlight a text and then run the Add command.
 
 ![Add secrets](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/add_secrets.gif)
 
-- Signup: For new users, you can start with Onboardbase directly from the extension. All you need is to verify your email address and you're automatically logged in.
+- **Signup**: For new users, you can start with Onboardbase directly from the extension. All you need is to verify your email address and you're automatically logged in.
 
 ![Signup](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/signup.gif)
 
-- Teammate Signup: For a teammate that has been invited to join Onboardbase on a project, input the link received in your email and you're good to go.
+- **Teammate Signup**: For a teammate that has been invited to join Onboardbase on a project, input the link received in your email and you're good to go.
 
 ![Teammate Signup](https://onboardbase-vscode-artifacts.fra1.digitaloceanspaces.com/signup.gif)
 
