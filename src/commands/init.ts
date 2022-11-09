@@ -98,7 +98,7 @@ export const init = async () => {
               'Verification Complete. You are now logged in',
             );
 
-            const projectTitle = await window.showInputBox({
+            let projectTitle = await window.showInputBox({
               value: '',
               title: 'Project Name',
               prompt: 'Please Enter A Project Name',
@@ -108,6 +108,7 @@ export const init = async () => {
             if (!projectTitle) {
               return new Promise<void>((resolve) => resolve());
             }
+            projectTitle = projectTitle.toLowerCase();
 
             window.showInformationMessage('Creating Project...');
             const { accessToken } = await generateAccessToken(
