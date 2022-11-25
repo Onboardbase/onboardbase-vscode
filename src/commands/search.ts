@@ -1,4 +1,5 @@
-import { ProgressLocation, window } from 'vscode';
+import { ProgressLocation, window, workspace } from 'vscode';
+import * as YAML from 'yaml';
 
 import ConfigManager from '../config';
 import { fetchRawSecrets } from '../utils';
@@ -10,7 +11,13 @@ export const search = async () => {
   }
 
   await ConfigManager.init();
-  const config = ConfigManager.getProjectConfig();
+  const ymlFiles = await workspace.findFiles(
+    '.onboardbase.yaml',
+    '**/node_modules/**',
+  );
+  const configData = await workspace.fs.readFile(ymlFiles[0]);
+  const config = YAML.parse(Buffer.from(configData).toString('utf8'));
+
   const secretName = await window.showInputBox({
     title: 'Search for a secret',
     placeHolder: 'Name of secret ',

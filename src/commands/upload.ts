@@ -1,10 +1,11 @@
 import { ProgressLocation, window, workspace } from 'vscode';
+import * as YAML from 'yaml';
 
 import { checkForProjectScope } from '../utils/authentication';
 import ConfigManager from '../config';
 import { uploadSecretsToOnboardbase } from '../utils';
 
-export const upload = async (env: { [key: string]: string | number }) => {
+export const upload = async (env: { [key: string]: string }) => {
   if (!checkForProjectScope()) {
     return window.showErrorMessage('Please login');
   }
@@ -15,7 +16,12 @@ export const upload = async (env: { [key: string]: string | number }) => {
   }
 
   await ConfigManager.init();
-  const config = ConfigManager.getProjectConfig();
+  const ymlFiles = await workspace.findFiles(
+    '.onboardbase.yaml',
+    '**/node_modules/**',
+  );
+  const configData = await workspace.fs.readFile(ymlFiles[0]);
+  const config = YAML.parse(Buffer.from(configData).toString('utf8'));
 
   window.withProgress(
     {
