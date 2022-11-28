@@ -30,10 +30,15 @@ export const getEnvironmentId = async (
   accessToken: string,
 ): Promise<string> => {
   const envs = await fetchProjects(accessToken);
-  const envId = envs.find((e) =>
-    e.environments.list.find((el) => el.title === env),
+  let environmentId: string;
+  envs.find((e) =>
+    e.environments.list.find((el) => {
+      if (el.title === env) {
+        environmentId = el.id;
+      }
+    }),
   );
-  return envId.environments.list[0].id;
+  return environmentId;
 };
 
 export const checkForProjectScope = (): boolean => {

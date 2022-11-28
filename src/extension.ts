@@ -76,7 +76,7 @@ export function activate(context: ExtensionContext) {
 
   commands.registerCommand(
     'onboardbase-extension.upload',
-    async (args: { [key: string]: string | number }) => {
+    async (args: { [key: string]: string }) => {
       await upload(args);
     },
   );

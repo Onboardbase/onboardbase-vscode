@@ -175,7 +175,8 @@ export const fetchRawSecrets = async (
   const environmentId = await getEnvironmentId(environment, accessToken);
   const secrets = await retrieveSecrets(environmentId, accessToken);
 
-  const userCanFetchSecretUnderEnvironment = secrets.list[0].project.member;
+  const userCanFetchSecretUnderEnvironment =
+    secrets.list.length > 0 ? secrets.list[0].project.member : true;
   if (!userCanFetchSecretUnderEnvironment) {
     throw new Error(
       `You don't have enough permission to update/upload/delete secrets under the ${environment} environment.`,
