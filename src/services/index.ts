@@ -258,7 +258,7 @@ export const createProject = async (
         ${environment ? `environment: "${environment}"` : ''}
         type: "api_keys"
       }
-    ) {
+    ) {   
       id
     }
   }
@@ -266,6 +266,7 @@ export const createProject = async (
 
   try {
     const { data } = await instance.post('', { query });
+    console.log({ data, title });
     if (data?.errors) {
       throw new Error(data.errors[0].message);
     }
