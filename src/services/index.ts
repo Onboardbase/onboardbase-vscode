@@ -266,8 +266,11 @@ export const createProject = async (
 
   try {
     const { data } = await instance.post('', { query });
-    console.log({ data, title });
-    if (data?.errors) {
+    const obb = vscode.window.createOutputChannel('Onboardbase');
+    obb.appendLine(`${data}`);
+    obb.appendLine(title);
+
+    if (data.errors) {
       throw new Error(data.errors[0].message);
     }
   } catch (error) {

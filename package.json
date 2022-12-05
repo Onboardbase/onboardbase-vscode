@@ -89,12 +89,12 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "vscode:prepublish": "yarn run -S esbuild-base",
+    "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "build": "yarn run -S esbuild-base",
+    "watch": "yarn run -S esbuild-base -- --sourcemap --watch",
+    "fmt": "prettier --write \"src/**/*.ts\"&& yarn run test",
+    "test": "eslint src --ext ts && tsc --noEmit"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
