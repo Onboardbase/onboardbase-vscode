@@ -4,7 +4,6 @@ import * as os from 'os';
 import ConfigManager from '../config';
 import {
   createProject,
-  fetchProjects,
   generateAccessToken,
   generateAuthCode,
   getAuthToken,
@@ -110,29 +109,32 @@ export const init = async () => {
             }
             projectTitle = projectTitle.toLowerCase();
 
+            let environmentTitle = await window.showInputBox({
+              value: 'development',
+              title: 'Project Name',
+              prompt: 'Please Enter A Project Name',
+              ignoreFocusOut: false,
+            });
+
+            if (!environmentTitle) {
+              return new Promise<void>((resolve) => resolve());
+            }
+            environmentTitle = environmentTitle.toLowerCase();
+
             window.showInformationMessage('Creating Project...');
             const { accessToken } = await generateAccessToken(
               await ConfigManager.getToken(),
             );
-            await createProject(accessToken, projectTitle, '');
+            await createProject(accessToken, projectTitle, environmentTitle);
             window.showInformationMessage(
-              `Project ${projectTitle} created successfully`,
-            );
-
-            const projects = await fetchProjects(accessToken);
-
-            const environment = projects
-              .find(({ title }) => projectTitle === title)
-              ?.environments.list.map(({ title }) => title);
-            window.showInformationMessage(
-              `Environment with name ${environment[0]} created successfully`,
+              `Project ${projectTitle} and environment ${environmentTitle} created successfully`,
             );
 
             /*create project end*/
 
             /* Setup Project */
             window.showInformationMessage('Setting Up Your Project');
-            await setUpProject(projectTitle, environment?.[0]);
+            await setUpProject(projectTitle, environmentTitle);
 
             window.showInformationMessage(
               'Start your project with onboardbase run “start command”',
