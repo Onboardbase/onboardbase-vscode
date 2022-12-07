@@ -26,14 +26,17 @@ export const retrieveSecrets = async (
       }
   }
   }}`;
-
-  const { data } = await instance.post('', { query });
-  if (data.errors && data.errors[0].message === 'Unauthorized') {
-    throw new Error(
-      "Sorry you don't have access to this project environment any longer, please contact admin",
-    );
+  try {
+    const { data } = await instance.post('', { query });
+    if (data.errors && data.errors[0].message === 'Unauthorized') {
+      throw new Error(
+        "Sorry you don't have access to this project environment any longer, please contact admin",
+      );
+    }
+    return data.data.generalSecrets;
+  } catch (err) {
+    console.log(err);
   }
-  return data.data.generalSecrets;
 };
 
 export const addMergeRequest = async (

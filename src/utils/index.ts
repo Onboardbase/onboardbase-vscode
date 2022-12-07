@@ -161,6 +161,7 @@ export const parseEnvContentToObject = (envFileContent: string) => {
 
 export const fetchRawSecrets = async (
   environment: string,
+  authToken?: string,
 ): Promise<{
   env: { key: string; value: string }[];
   user: { name: string; id: string };
@@ -168,7 +169,7 @@ export const fetchRawSecrets = async (
   environmentId: string;
 }> => {
   const { accessToken, user } = await generateAccessToken(
-    await ConfigManager.getToken(),
+    authToken ?? (await ConfigManager.getToken()),
   );
 
   const decryptedRSASecretKey = getEncryptionAndDecryptionKey(accessToken);
@@ -256,14 +257,22 @@ export const removeDuplicateSecrete = (data: Record<string, string>[]) => {
   return cleanArr;
 };
 
-export const uploadSecretsToOnboardbase = async (
-  currentEnvironment: string,
-  parsedJSON: Record<string, string>,
-  excludeFromExistingSecrets?: string[],
-  action?: string,
-) => {
+export const uploadSecretsToOnboardbase = async ({
+  currentEnvironment,
+  parsedJSON,
+  excludeFromExistingSecrets,
+  action,
+  authToken,
+}: {
+  currentEnvironment: string;
+  parsedJSON: Record<string, string>;
+  excludeFromExistingSecrets?: string[];
+  action?: string;
+  authToken?: string;
+}) => {
   const { env, accessToken, environmentId } = await fetchRawSecrets(
     currentEnvironment,
+    authToken,
   );
 
   const secretsToDelete = [];
