@@ -9,7 +9,11 @@ import {
   uploadSecretsToOnboardbase,
 } from '../utils';
 
-export const setUpProject = async (project: string, pickedEnv: string) => {
+export const setUpProject = async (
+  project: string,
+  pickedEnv: string,
+  authToken?: string,
+) => {
   const config = YAML.stringify({
     setup: {
       project: project,
@@ -82,10 +86,11 @@ export const setUpProject = async (project: string, pickedEnv: string) => {
             cancellable: false,
           },
           async () => {
-            await uploadSecretsToOnboardbase(
-              pickedEnv,
-              parseEnvContentToObject(envContent),
-            );
+            await uploadSecretsToOnboardbase({
+              currentEnvironment: pickedEnv,
+              parsedJSON: parseEnvContentToObject(envContent),
+              authToken,
+            });
 
             if (shouldDeleteEnvFileAfterSync === 'Yes') {
               vscode.workspace.fs.delete(envFiles[0]);
@@ -122,10 +127,11 @@ export const setUpProject = async (project: string, pickedEnv: string) => {
               (file) => posix.parse(file.path).base === envSelection,
             ),
           );
-          await uploadSecretsToOnboardbase(
-            pickedEnv,
-            parseEnvContentToObject(envContent),
-          );
+          await uploadSecretsToOnboardbase({
+            currentEnvironment: pickedEnv,
+            parsedJSON: parseEnvContentToObject(envContent),
+            authToken,
+          });
           if (shouldDeleteEnvFileAfterSync === 'Yes') {
             vscode.workspace.fs.delete(
               envFiles.find(

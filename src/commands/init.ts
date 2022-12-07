@@ -122,9 +122,7 @@ export const init = async () => {
             environmentTitle = environmentTitle.toLowerCase();
 
             window.showInformationMessage('Creating Project...');
-            const { accessToken } = await generateAccessToken(
-              await ConfigManager.getToken(),
-            );
+            const { accessToken } = await generateAccessToken(token);
             await createProject(accessToken, projectTitle, environmentTitle);
             window.showInformationMessage(
               `Project ${projectTitle} and environment ${environmentTitle} created successfully`,
@@ -134,7 +132,7 @@ export const init = async () => {
 
             /* Setup Project */
             window.showInformationMessage('Setting Up Your Project');
-            await setUpProject(projectTitle, environmentTitle);
+            await setUpProject(projectTitle, environmentTitle, token);
 
             window.showInformationMessage(
               'Start your project with onboardbase run “start command”',
