@@ -31,7 +31,10 @@ export const search = async () => {
           title: 'Retrieving Secret...',
         },
         async () => {
-          const { env } = await fetchRawSecrets(config.setup.environment);
+          const { env } = await fetchRawSecrets({
+            environment: config.setup.environment,
+            projectName: config.setup.project,
+          });
 
           const foundSecret = env.find(
             (secret) => secret.key.toLowerCase() === secretName.toLowerCase(),
