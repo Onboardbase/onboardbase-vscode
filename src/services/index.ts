@@ -260,6 +260,13 @@ export const createProject = async (
       }
     ) {   
       id
+      environments {
+      list {
+        title
+        id
+      }
+    }
+
     }
   }
   `;

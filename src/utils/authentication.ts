@@ -25,19 +25,25 @@ export const checkSetupFile = async (): Promise<
   return ymlFiles.length > 0;
 };
 
-export const getEnvironmentId = async (
-  env: string,
-  accessToken: string,
-): Promise<string> => {
+export const getEnvironmentId = async ({
+  env,
+  accessToken,
+  projectName,
+}: {
+  env: string;
+  accessToken: string;
+  projectName: string;
+}): Promise<string> => {
   const envs = await fetchProjects(accessToken);
   let environmentId: string;
-  envs.find((e) =>
-    e.environments.list.find((el) => {
+  const project = envs.find((e) => e.title === projectName);
+  if (project) {
+    project.environments.list.find((el) => {
       if (el.title === env) {
         environmentId = el.id;
       }
-    }),
-  );
+    });
+  }
   return environmentId;
 };
 

@@ -6,6 +6,16 @@ import ConfigManager from '../config';
 import { fetchProjects, generateAccessToken } from '../services';
 import { setUpProject } from './setUpHelper';
 
+enum Roles {
+  Owner = 'Owner',
+  Admin = 'Admin',
+  Member = 'Member',
+  TeamLead = 'Team Lead',
+  Employee = 'Employee',
+  Tester = 'Tester',
+  Maintainer = 'Maintainer',
+}
+
 export const setUp = async () => {
   if (!checkForProjectScope()) {
     return vscode.window.showErrorMessage('Please login');
@@ -25,13 +35,19 @@ export const setUp = async () => {
     let projects = await fetchProjects(accessToken);
     projects = projects.filter(({ member }) => member);
 
-    const { team }: { team: { name: string } } = jwtDecode(accessToken);
+    const {
+      team,
+      teamRole,
+    }: { team: { name: string }; teamRole: { id: string; name: Roles } } =
+      jwtDecode(accessToken);
+
     if (Array.isArray(projects) && projects.length === 0) {
       return vscode.window.showInformationMessage(
         `Sorry you don't have any project under the ${team.name} team, please signin to Onboardbase and create a project.`,
       );
     }
 
+    const canUploadEnv = teamRole.name !== Roles.Employee;
     const modifiedProjects = projects.map((project) =>
       Object.assign(project, {
         environments: {
@@ -55,7 +71,7 @@ export const setUp = async () => {
     const pickedEnv = await vscode.window.showQuickPick(environments, {
       title: `Select an environment for (${project})`,
     });
-    setUpProject(project, pickedEnv);
+    setUpProject({ project, pickedEnv, canUploadEnv });
   } catch (err) {
     return vscode.window.showErrorMessage(err.message);
   }

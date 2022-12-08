@@ -9,11 +9,17 @@ import {
   uploadSecretsToOnboardbase,
 } from '../utils';
 
-export const setUpProject = async (
-  project: string,
-  pickedEnv: string,
-  authToken?: string,
-) => {
+export const setUpProject = async ({
+  project,
+  pickedEnv,
+  authToken,
+  canUploadEnv,
+}: {
+  project: string;
+  pickedEnv: string;
+  authToken?: string;
+  canUploadEnv: boolean;
+}) => {
   const config = YAML.stringify({
     setup: {
       project: project,
@@ -63,7 +69,7 @@ export const setUpProject = async (
     '**/*.env',
     '**/node_modules/**',
   );
-  if (envFiles.length > 0) {
+  if (envFiles.length > 0 && canUploadEnv) {
     const shouldSyncEnv = await vscode.window.showQuickPick(['Yes', 'No'], {
       title: 'Would you like to upload the env contents to onboardbase',
     });
@@ -90,6 +96,7 @@ export const setUpProject = async (
               currentEnvironment: pickedEnv,
               parsedJSON: parseEnvContentToObject(envContent),
               authToken,
+              projectName: project,
             });
 
             if (shouldDeleteEnvFileAfterSync === 'Yes') {
@@ -131,6 +138,7 @@ export const setUpProject = async (
             currentEnvironment: pickedEnv,
             parsedJSON: parseEnvContentToObject(envContent),
             authToken,
+            projectName: project,
           });
           if (shouldDeleteEnvFileAfterSync === 'Yes') {
             vscode.workspace.fs.delete(

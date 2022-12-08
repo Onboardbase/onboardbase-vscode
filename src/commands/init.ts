@@ -111,8 +111,8 @@ export const init = async () => {
 
             let environmentTitle = await window.showInputBox({
               value: 'development',
-              title: 'Project Name',
-              prompt: 'Please Enter A Project Name',
+              title: 'Environment Name',
+              prompt: 'Please Enter An Environment',
               ignoreFocusOut: false,
             });
 
@@ -123,7 +123,12 @@ export const init = async () => {
 
             window.showInformationMessage('Creating Project...');
             const { accessToken } = await generateAccessToken(token);
-            await createProject(accessToken, projectTitle, environmentTitle);
+            await createProject(
+              accessToken,
+              projectTitle,
+              '',
+              environmentTitle,
+            );
             window.showInformationMessage(
               `Project ${projectTitle} and environment ${environmentTitle} created successfully`,
             );
@@ -132,7 +137,12 @@ export const init = async () => {
 
             /* Setup Project */
             window.showInformationMessage('Setting Up Your Project');
-            await setUpProject(projectTitle, environmentTitle, token);
+            await setUpProject({
+              project: projectTitle,
+              pickedEnv: environmentTitle,
+              authToken: token,
+              canUploadEnv: true,
+            });
 
             window.showInformationMessage(
               'Start your project with onboardbase run “start command”',

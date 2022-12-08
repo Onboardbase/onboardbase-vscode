@@ -82,11 +82,15 @@ export const addSecrets = async (
   const instance = ConfigManager.getHttpInstance();
   instance.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
 
-  const { data } = await instance.post('', { query, variables });
-  if (data.errors && data.errors[0].message === 'Unauthorized') {
-    throw new Error(
-      "Sorry you don't have access to this project environment any longer, please contact admin",
-    );
+  try {
+    const { data } = await instance.post('', { query, variables });
+    if (data.errors && data.errors[0].message === 'Unauthorized') {
+      throw new Error(
+        "Sorry you don't have access to this project environment any longer, please contact admin",
+      );
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
   }
-  return data;
 };

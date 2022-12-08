@@ -159,10 +159,15 @@ export const parseEnvContentToObject = (envFileContent: string) => {
   return parsedJSON;
 };
 
-export const fetchRawSecrets = async (
-  environment: string,
-  authToken?: string,
-): Promise<{
+export const fetchRawSecrets = async ({
+  environment,
+  authToken,
+  projectName,
+}: {
+  environment: string;
+  authToken?: string;
+  projectName: string;
+}): Promise<{
   env: { key: string; value: string }[];
   user: { name: string; id: string };
   accessToken: string;
@@ -173,7 +178,11 @@ export const fetchRawSecrets = async (
   );
 
   const decryptedRSASecretKey = getEncryptionAndDecryptionKey(accessToken);
-  const environmentId = await getEnvironmentId(environment, accessToken);
+  const environmentId = await getEnvironmentId({
+    env: environment,
+    accessToken,
+    projectName,
+  });
   const secrets = await retrieveSecrets(environmentId, accessToken);
 
   const userCanFetchSecretUnderEnvironment =
@@ -263,17 +272,20 @@ export const uploadSecretsToOnboardbase = async ({
   excludeFromExistingSecrets,
   action,
   authToken,
+  projectName,
 }: {
   currentEnvironment: string;
   parsedJSON: Record<string, string>;
   excludeFromExistingSecrets?: string[];
   action?: string;
   authToken?: string;
+  projectName: string;
 }) => {
-  const { env, accessToken, environmentId } = await fetchRawSecrets(
-    currentEnvironment,
+  const { env, accessToken, environmentId } = await fetchRawSecrets({
+    environment: currentEnvironment,
     authToken,
-  );
+    projectName,
+  });
 
   const secretsToDelete = [];
   if (action === 'DELETE') {
@@ -317,12 +329,17 @@ export const createMergeRequest = async (
   currentEnvironment: string,
   env: { key: string; value: string },
   comments: string,
+  projectName: string,
 ) => {
   const { accessToken } = await generateAccessToken(
     await ConfigManager.getToken(),
   );
 
-  const environmentId = await getEnvironmentId(currentEnvironment, accessToken);
+  const environmentId = await getEnvironmentId({
+    env: currentEnvironment,
+    accessToken,
+    projectName,
+  });
   const encryptionKey = getEncryptionAndDecryptionKey(accessToken);
 
   const secret: BaseAddSecretInput = {

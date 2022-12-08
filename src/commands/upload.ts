@@ -34,6 +34,7 @@ export const upload = async (env: { [key: string]: string }) => {
         await uploadSecretsToOnboardbase({
           currentEnvironment: config.setup.environment,
           parsedJSON: env,
+          projectName: config.setup.project,
         });
         window.showInformationMessage(
           'Secret has been uploaded to Onboardbase successfully.',
