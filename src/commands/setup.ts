@@ -5,16 +5,7 @@ import { checkForProjectScope } from '../utils/authentication';
 import ConfigManager from '../config';
 import { fetchProjects, generateAccessToken } from '../services';
 import { setUpProject } from './setUpHelper';
-
-enum Roles {
-  Owner = 'Owner',
-  Admin = 'Admin',
-  Member = 'Member',
-  TeamLead = 'Team Lead',
-  Employee = 'Employee',
-  Tester = 'Tester',
-  Maintainer = 'Maintainer',
-}
+import { Roles } from '../utils';
 
 export const setUp = async () => {
   if (!checkForProjectScope()) {

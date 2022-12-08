@@ -23,6 +23,16 @@ import {
   TAddSecretInput,
 } from '../services/response.types';
 
+export enum Roles {
+  Owner = 'Owner',
+  Admin = 'Admin',
+  Member = 'Member',
+  TeamLead = 'Team Lead',
+  Employee = 'Employee',
+  Tester = 'Tester',
+  Maintainer = 'Maintainer',
+}
+
 export const defaultSpwanArgs: SpawnOptions = {
   shell: true,
   cwd: process.cwd(),
