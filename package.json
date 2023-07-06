@@ -2,7 +2,7 @@
   "name": "onboardbase-for-vscode",
   "displayName": "Onboardbase",
   "description": "Onboardbase is an app secret infrastructure for dev teams to securely share and work with environment-specific configs synced across every development stage, infrastructure and teammates without compromising security.",
-  "version": "1.5.15",
+  "version": "1.5.16",
   "engines": {
     "vscode": "^1.71.0"
   },
